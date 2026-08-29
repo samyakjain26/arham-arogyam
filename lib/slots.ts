@@ -25,13 +25,34 @@ export function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): bo
 }
 
 export function getAvailableSlots(p: SlotParams): Slot[] {
+  // slotMinutes drives the loop increment below. A non-positive or non-finite
+  // value (0 from a bad admin config, a stray NaN/Infinity) would either never
+  // advance `t` or never satisfy the loop's exit condition, hanging the process
+  // forever. Fail loudly and immediately rather than returning an empty array,
+  // which would be indistinguishable from "no availability today" and hide a
+  // misconfiguration behind a silent, confusing bug.
+  if (!Number.isFinite(p.slotMinutes) || p.slotMinutes <= 0) {
+    throw new RangeError(`slotMinutes must be a positive finite number, got ${p.slotMinutes}`)
+  }
+  // minLeadHours can't hang the loop (it only shifts the lead-time cutoff), but
+  // a NaN/Infinity value makes every comparison against leadCutoff silently
+  // false, which disables the minimum-lead-time safety check entirely without
+  // any signal. Fail loudly here too, for the same "don't hide a misconfig"
+  // reason as above. Zero is a legitimate "no minimum lead time" setting.
+  if (!Number.isFinite(p.minLeadHours) || p.minLeadHours < 0) {
+    throw new RangeError(`minLeadHours must be a non-negative finite number, got ${p.minLeadHours}`)
+  }
+
   const weekday = istWeekday(p.dateISO)
   const rules = p.rules.filter((r) => r.active && r.weekday === weekday)
   if (rules.length === 0) return []
 
   const dayBlackouts = p.blackouts.filter((b) => b.date === p.dateISO)
 
-  // A blackout with no times blocks the whole day outright.
+  // A blackout with no times blocks the whole day outright. A blackout with
+  // only ONE of startTime/endTime set is ambiguous input (ill-formed data,
+  // not a valid partial range) — deliberately fail safe by treating it the
+  // same as a whole-day blackout rather than guessing which half was meant.
   if (dayBlackouts.some((b) => b.startTime === null || b.endTime === null)) return []
 
   const blackoutRanges = dayBlackouts.map((b) => ({
@@ -62,7 +83,21 @@ export function getAvailableSlots(p: SlotParams): Slot[] {
     }
   }
 
-  return slots.sort((a, b) => a.start.getTime() - b.start.getTime())
+  // Two active rules for the same weekday can have overlapping windows (e.g.
+  // while an admin is mid-edit), which would otherwise emit the same or an
+  // overlapping slot twice — two patients could be offered the identical
+  // time. Sort by start, then keep only slots that don't overlap one already
+  // kept; since input is sorted ascending, the earliest-starting slot in any
+  // overlapping cluster is always the one kept. Ordinary back-to-back slots
+  // within a single rule only touch endpoints (half-open intervals), so they
+  // never overlap each other and are never dropped by this pass.
+  const sorted = slots.sort((a, b) => a.start.getTime() - b.start.getTime())
+  const deduped: Slot[] = []
+  for (const s of sorted) {
+    if (deduped.some((kept) => overlaps(s.start, s.end, kept.start, kept.end))) continue
+    deduped.push(s)
+  }
+  return deduped
 }
 
 /** Upcoming clinic days, as IST calendar dates. Includes today if it is a Tuesday. */

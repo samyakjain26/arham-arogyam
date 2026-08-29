@@ -35,6 +35,45 @@ describe('overlaps', () => {
   })
 })
 
+describe('getAvailableSlots — input validation', () => {
+  // slotMinutes of 0 or negative makes the generation loop's step never
+  // advance (or never satisfy its exit condition), which hangs the process
+  // forever instead of failing. Each test carries an explicit timeout so
+  // that if this guard ever regresses, the suite fails fast instead of
+  // hanging CI indefinitely.
+  it('throws for slotMinutes of 0', () => {
+    expect(() => getAvailableSlots(params({ slotMinutes: 0 }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for negative slotMinutes', () => {
+    expect(() => getAvailableSlots(params({ slotMinutes: -15 }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for NaN slotMinutes', () => {
+    expect(() => getAvailableSlots(params({ slotMinutes: NaN }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for Infinity slotMinutes', () => {
+    expect(() => getAvailableSlots(params({ slotMinutes: Infinity }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for NaN minLeadHours', () => {
+    expect(() => getAvailableSlots(params({ minLeadHours: NaN }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for Infinity minLeadHours', () => {
+    expect(() => getAvailableSlots(params({ minLeadHours: Infinity }))).toThrow(RangeError)
+  }, 2000)
+
+  it('throws for negative minLeadHours', () => {
+    expect(() => getAvailableSlots(params({ minLeadHours: -1 }))).toThrow(RangeError)
+  }, 2000)
+
+  it('accepts a minLeadHours of exactly 0 (no minimum lead time)', () => {
+    expect(() => getAvailableSlots(params({ minLeadHours: 0 }))).not.toThrow()
+  }, 2000)
+})
+
 describe('getAvailableSlots', () => {
   it('generates 20 fifteen-minute slots for 17:00-22:00', () => {
     const slots = getAvailableSlots(params())
@@ -74,6 +113,11 @@ describe('getAvailableSlots', () => {
 
   it('returns nothing on a whole-day blackout', () => {
     const blackouts = [{ date: TUESDAY, startTime: null, endTime: null }]
+    expect(getAvailableSlots(params({ blackouts }))).toEqual([])
+  })
+
+  it('treats a blackout with only one time set as a whole-day blackout (deliberate fail-safe)', () => {
+    const blackouts = [{ date: TUESDAY, startTime: '17:00', endTime: null }]
     expect(getAvailableSlots(params({ blackouts }))).toEqual([])
   })
 
@@ -134,6 +178,47 @@ describe('getAvailableSlots', () => {
     const slots = getAvailableSlots(params())
     const times = slots.map((s) => s.start.getTime())
     expect(times).toEqual([...times].sort((a, b) => a - b))
+  })
+})
+
+describe('getAvailableSlots — overlapping rules', () => {
+  it('deduplicates overlapping windows from two active rules on the same weekday', () => {
+    // 17:00-20:00 and 19:00-22:00 overlap on 19:00-20:00. Without dedup, the
+    // 19:00-20:00 slot would be emitted twice and two patients could be
+    // offered the identical time.
+    const rules = [
+      { weekday: 2, startTime: '17:00', endTime: '20:00', active: true },
+      { weekday: 2, startTime: '19:00', endTime: '22:00', active: true },
+    ]
+    const slots = getAvailableSlots(params({ rules, slotMinutes: 60 }))
+    expect(slots).toHaveLength(5)
+
+    const starts = slots.map((s) => s.start.getTime())
+    expect(new Set(starts).size).toBe(starts.length) // no duplicate starts
+
+    // no two kept slots may overlap each other
+    for (let i = 1; i < slots.length; i++) {
+      expect(overlaps(slots[i - 1].start, slots[i - 1].end, slots[i].start, slots[i].end))
+        .toBe(false)
+    }
+
+    expect(slots[0].start.toISOString()).toBe(istWallClockToUtc(TUESDAY, '17:00').toISOString())
+    expect(slots[slots.length - 1].end.toISOString())
+      .toBe(istWallClockToUtc(TUESDAY, '22:00').toISOString())
+  })
+
+  it('unions two non-overlapping windows from two active rules on the same weekday', () => {
+    const rules = [
+      { weekday: 2, startTime: '09:00', endTime: '11:00', active: true },
+      { weekday: 2, startTime: '17:00', endTime: '19:00', active: true },
+    ]
+    const slots = getAvailableSlots(params({ rules, slotMinutes: 60 }))
+    expect(slots.map((s) => s.start.toISOString())).toEqual([
+      istWallClockToUtc(TUESDAY, '09:00').toISOString(),
+      istWallClockToUtc(TUESDAY, '10:00').toISOString(),
+      istWallClockToUtc(TUESDAY, '17:00').toISOString(),
+      istWallClockToUtc(TUESDAY, '18:00').toISOString(),
+    ])
   })
 })
 
