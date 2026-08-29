@@ -1,0 +1,53 @@
+{
+  "site": {
+    "name": "Arham Arogyam",
+    "subtitle": "Bapu Nagar Aushdhalay",
+    "tagline": "Accessible health consultation for everyone"
+  },
+  "nav": { "home": "Home", "book": "Book", "mine": "My Appointments", "about": "About", "services": "Services", "ayurveda": "Ayurveda", "contact": "Contact" },
+  "hero": {
+    "vaidya": "Vaidya Rahul Jain",
+    "timing": "Every Tuesday, 5:00 PM – 10:00 PM",
+    "cta": "Book Appointment",
+    "address": "C-39, Jyoti Marg, Bapu Nagar, Jaipur"
+  },
+  "how": {
+    "title": "How it works",
+    "step1": "Choose a time",
+    "step2": "Visit the centre",
+    "step3": "Consult the Vaidya"
+  },
+  "book": {
+    "step": "Step {n} of 4",
+    "pickDate": "Choose a Tuesday",
+    "pickSlot": "Choose a time",
+    "slotsLeft": "{n} times available",
+    "full": "No times available on this day",
+    "signIn": "Sign in with Google",
+    "confirmCta": "Book the {time} slot",
+    "name": "Full name",
+    "age": "Age",
+    "gender": "Gender",
+    "phone": "Mobile number",
+    "reason": "Reason for visit",
+    "consent": "I agree that this information will be used only for scheduling my appointment.",
+    "confirmed": "Your appointment is confirmed",
+    "code": "Booking code",
+    "addCalendar": "Add to calendar",
+    "cancel": "Cancel appointment",
+    "cancelConfirm": "Are you sure you want to cancel this appointment?"
+  },
+  "errors": {
+    "slotTaken": "Someone just booked this time. Please choose another one.",
+    "tooLate": "This time can no longer be booked. Please choose a later one.",
+    "alreadyBooked": "You already have an appointment booked. Please cancel it first.",
+    "network": "There is a problem with your internet connection. Please try again.",
+    "generic": "Something went wrong. Please try again in a moment."
+  },
+  "ayurveda": {
+    "title": "Ayurvedic consultation",
+    "notice": "Ayurvedic medicines and remedies may be recommended after consultation with the Vaidya, depending on individual requirements. Please consult the Vaidya before taking any medicine or remedy."
+  },
+  "disclaimer": "This service is not for medical emergencies. No medical advice is provided online through this website.",
+  "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic" }
+}
