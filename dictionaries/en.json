@@ -48,6 +48,27 @@
     "title": "Ayurvedic consultation",
     "notice": "Ayurvedic medicines and remedies may be recommended after consultation with the Vaidya, depending on individual requirements. Please consult the Vaidya before taking any medicine or remedy."
   },
+  "services": {
+    "title": "Our Services",
+    "items": [
+      "General health checkups",
+      "Basic health consultation",
+      "Consultation with the Vaidya",
+      "Health and wellness guidance",
+      "Diet and lifestyle guidance",
+      "Basic Ayurvedic guidance",
+      "Guidance on common health concerns",
+      "Preventive health advice"
+    ]
+  },
+  "trust": {
+    "title": "Ayurvedic Physician",
+    "regLabel": "Registration No.: {n}"
+  },
+  "visit": {
+    "title": "Visit Us",
+    "directions": "Get Directions"
+  },
   "disclaimer": "This service is not for medical emergencies. No medical advice is provided online through this website.",
   "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic" }
 }
