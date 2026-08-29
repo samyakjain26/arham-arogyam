@@ -51,6 +51,8 @@
   --radius-input: 8px;
   --shadow-card: 0 4px 20px rgba(20, 64, 26, 0.08);
   --shadow-lift: 0 8px 28px rgba(20, 64, 26, 0.14);
+  --container-content: 1140px;
+  --max-width-prose: 68ch;
 }
 
 html { scroll-behavior: smooth; }
