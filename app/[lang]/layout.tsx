@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getDictionary, isLang, LANGS, type Lang } from '@/lib/i18n'
 import { fraunces, inter, notoSansDev, notoSerifDev } from '../fonts'
+import { Header } from '@/components/shell/Header'
+import { Footer } from '@/components/shell/Footer'
+import { BottomNav } from '@/components/shell/BottomNav'
 import '../globals.css'
 
 export function generateStaticParams() {
@@ -28,6 +31,13 @@ export async function generateMetadata(
       canonical: `/${lang}`,
       languages: { hi: '/hi', en: '/en' },
     },
+    icons: {
+      icon: '/logo-192.png',
+      apple: '/logo-192.png',
+    },
+    openGraph: {
+      images: ['/logo-512.png'],
+    },
   }
 }
 
@@ -40,6 +50,7 @@ export default async function LangLayout({
   return (
     <html
       lang={lang}
+      data-scroll-behavior="smooth"
       className={`${fraunces.variable} ${inter.variable} ${notoSansDev.variable} ${notoSerifDev.variable} h-full antialiased`}
     >
       <head>
@@ -47,7 +58,12 @@ export default async function LangLayout({
           <style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style>
         </noscript>
       </head>
-      <body className="min-h-dvh bg-cream text-ink">{children}</body>
+      <body className="min-h-dvh bg-cream text-ink pb-20 md:pb-0">
+        <Header lang={lang} />
+        {children}
+        <Footer lang={lang} />
+        <BottomNav lang={lang} />
+      </body>
     </html>
   )
 }
