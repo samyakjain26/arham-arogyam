@@ -7,18 +7,8 @@ import { getDictionary, type Lang } from '@/lib/i18n'
 // calling ahead, so the link only renders once a real number lands here.
 const CLINIC_PHONE = ''
 
-// Task 14 (content pages) adds `privacy` / `terms` dictionary sections.
-// Until then these two labels are inlined by language rather than reaching
-// into dictionaries this task does not own — swap for d.privacy.title /
-// d.terms.title once Task 14 lands.
-const FOOTER_LINK_LABELS = {
-  hi: { privacy: 'गोपनीयता नीति', terms: 'नियम व शर्तें' },
-  en: { privacy: 'Privacy Policy', terms: 'Terms' },
-} as const
-
 export function Footer({ lang }: { lang: Lang }) {
   const d = getDictionary(lang)
-  const labels = FOOTER_LINK_LABELS[lang]
 
   return (
     <footer className="border-t border-hairline bg-green-50">
@@ -48,14 +38,14 @@ export function Footer({ lang }: { lang: Lang }) {
             className="inline-flex min-h-[48px] items-center text-base font-medium
                        text-green-700 hover:text-green-900"
           >
-            {labels.privacy}
+            {d.privacy.title}
           </Link>
           <Link
             href={`/${lang}/terms`}
             className="inline-flex min-h-[48px] items-center text-base font-medium
                        text-green-700 hover:text-green-900"
           >
-            {labels.terms}
+            {d.terms.title}
           </Link>
         </div>
       </div>

@@ -46,10 +46,20 @@
   },
   "ayurveda": {
     "title": "Ayurvedic consultation",
+    "intro": "This centre offers guidance and support in the following areas, based on individual consultation with the Vaidya.",
+    "categories": [
+      "Ayurvedic medicines",
+      "Herbal remedies",
+      "Natural ingredients",
+      "Lifestyle guidance",
+      "Diet recommendations",
+      "Preventive advice"
+    ],
     "notice": "Ayurvedic medicines and remedies may be recommended after consultation with the Vaidya, depending on individual requirements. Please consult the Vaidya before taking any medicine or remedy."
   },
   "services": {
     "title": "Our Services",
+    "intro": "Every Tuesday evening, the following services are available at this centre.",
     "items": [
       "General health checkups",
       "Basic health consultation",
@@ -70,5 +80,41 @@
     "directions": "Get Directions"
   },
   "disclaimer": "This service is not for medical emergencies. No medical advice is provided online through this website.",
+  "about": {
+    "title": "About Us",
+    "mission": "Arham Arogyam is a community initiative offering accessible Ayurvedic consultation to everyone in Bapu Nagar and the surrounding areas of Jaipur.",
+    "vaidyaBody": "Vaidya Rahul Jain meets patients from the community at this centre every Tuesday evening for consultation.",
+    "accessTitle": "Why Accessible Care Matters",
+    "accessBody": "Many people in the community find it hard to access regular health consultation. This centre exists to make that consultation simple, unhurried, and open to anyone who walks in."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "addressTitle": "Address",
+    "timingsTitle": "Timings"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "This notice explains what personal information Arham Arogyam collects when you book an appointment, why it is collected, how long it is kept, and how you can request its deletion. This policy is written to align with India's Digital Personal Data Protection Act, 2023 (DPDP Act).",
+    "collectedTitle": "Information We Collect",
+    "collectedBody": "When you book an appointment, we collect your name, mobile number, age, gender, reason for visit, and email address.",
+    "purposeTitle": "Why We Collect It",
+    "purposeBody": "This information is used only to schedule and manage your consultation at the centre. It is not used for any other purpose.",
+    "retentionTitle": "How Long We Keep It",
+    "retentionBody": "Your appointment information is retained for 24 months from the date of your visit, after which it is deleted.",
+    "consentTitle": "Your Consent",
+    "consentBody": "You give your consent explicitly at the time of booking by actively choosing the consent option yourself. It is never selected for you in advance.",
+    "deletionTitle": "Requesting Deletion",
+    "deletionBody": "You can request deletion of your information from the My Appointments page once it is available, or by contacting the clinic directly."
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "intro": "These terms explain how this website may be used. By using this website to view information or book an appointment, you agree to them.",
+    "disclaimerTitle": "Medical Disclaimer",
+    "disclaimerBody": "This website is not for medical emergencies. If you have a medical emergency, please go to the nearest hospital immediately. No medical advice is provided online through this website. Please always consult the Vaidya in person before taking any medicine or remedy.",
+    "usageTitle": "Using This Website",
+    "usageBody": "This website helps you view information about the centre and book a consultation slot. Please provide accurate information when booking, as it is used only to manage your appointment.",
+    "changesTitle": "Changes to These Terms",
+    "changesBody": "These terms may be updated from time to time. Continuing to use this website after a change means you accept the updated terms."
+  },
   "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic" }
 }

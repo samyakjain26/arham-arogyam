@@ -2,13 +2,29 @@ import { describe, it, expect } from 'vitest'
 import hi from '../dictionaries/hi.json'
 import en from '../dictionaries/en.json'
 
+// Arrays are flattened by index (e.g. `services.items.0`, `services.items.1`)
+// rather than treated as opaque leaves. That way a missing/extra array
+// element, or an element count mismatch between languages, shows up as a
+// key-set diff instead of silently passing.
 function flatten(obj: Record<string, unknown>, prefix = ''): string[] {
   return Object.entries(obj).flatMap(([k, v]) => {
     const key = prefix ? `${prefix}.${k}` : k
-    return v !== null && typeof v === 'object' && !Array.isArray(v)
+    if (Array.isArray(v)) {
+      return v.flatMap((el, i) => {
+        const arrKey = `${key}.${i}`
+        return el !== null && typeof el === 'object'
+          ? flatten(el as Record<string, unknown>, arrKey)
+          : [arrKey]
+      })
+    }
+    return v !== null && typeof v === 'object'
       ? flatten(v as Record<string, unknown>, key)
       : [key]
   })
+}
+
+function getPath(obj: unknown, key: string): unknown {
+  return key.split('.').reduce<any>((o, p) => o?.[p], obj)
 }
 
 describe('dictionaries', () => {
@@ -20,14 +36,12 @@ describe('dictionaries', () => {
   })
 
   it('have no empty values in hi', () => {
-    const empties = flatten(hi).filter((k) =>
-      k.split('.').reduce<any>((o, p) => o?.[p], hi) === '')
+    const empties = hiKeys.filter((k) => getPath(hi, k) === '')
     expect(empties).toEqual([])
   })
 
   it('have no empty values in en', () => {
-    const empties = flatten(en).filter((k) =>
-      k.split('.').reduce<any>((o, p) => o?.[p], en) === '')
+    const empties = enKeys.filter((k) => getPath(en, k) === '')
     expect(empties).toEqual([])
   })
 })
