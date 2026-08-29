@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --green-900: #14401A;
+  --green-700: #1B5E20;
+  --green-500: #2E7D32;
+  --green-300: #66BB6A;
+  --green-50: #EDF5EE;
+
+  --saffron-600: #C96A10;
+  --saffron-500: #E8871E;
+  --saffron-100: #FDF0DC;
+
+  --magenta-600: #D81B60;
+  --magenta-50: #FCE4EC;
+
+  --gold-500: #F2C230;
+
+  --cream: #FFFCF5;
+  --surface: #FFFFFF;
+  --ink: #1C1917;
+  --ink-muted: #57534E;
+  --border: #E7E2D8;
+
+  --shadow-card: 0 4px 20px rgba(20, 64, 26, 0.08);
+  --shadow-lift: 0 8px 28px rgba(20, 64, 26, 0.14);
+
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-green-900: var(--green-900);
+  --color-green-700: var(--green-700);
+  --color-green-500: var(--green-500);
+  --color-green-300: var(--green-300);
+  --color-green-50: var(--green-50);
+  --color-saffron-600: var(--saffron-600);
+  --color-saffron-500: var(--saffron-500);
+  --color-saffron-100: var(--saffron-100);
+  --color-magenta-600: var(--magenta-600);
+  --color-magenta-50: var(--magenta-50);
+  --color-gold-500: var(--gold-500);
+  --color-cream: var(--cream);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-hairline: var(--border);
+  --radius-card: 20px;
+  --radius-btn: 12px;
+  --radius-input: 8px;
+  --shadow-card: 0 4px 20px rgba(20, 64, 26, 0.08);
+  --shadow-lift: 0 8px 28px rgba(20, 64, 26, 0.14);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.6;
+  font-family: var(--font-inter), var(--font-noto-sans-dev), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(hi) body, [lang='hi'] {
+  font-family: var(--font-noto-sans-dev), var(--font-inter), system-ui, sans-serif;
+  line-height: 1.7;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-fraunces), var(--font-noto-serif-dev), Georgia, serif;
+  color: var(--green-900);
+  line-height: 1.2;
+}
+
+[lang='hi'] h1, [lang='hi'] h2, [lang='hi'] h3 {
+  font-family: var(--font-noto-serif-dev), var(--font-fraunces), Georgia, serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--saffron-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scroll-reveal: content is never display:none, so a JS failure
+   still leaves the page fully readable. */
+.reveal { opacity: 0.001; transform: translateY(16px); }
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 400ms var(--ease-enter), transform 400ms var(--ease-enter);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }
