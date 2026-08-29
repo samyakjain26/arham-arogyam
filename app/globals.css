@@ -27,6 +27,13 @@
 
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* BottomNav's rendered height on mobile: 56px min-h links + 1px border-top.
+     Measured via getBoundingClientRect at 390x844 (Chromium, no safe-area
+     inset). Body reserves this plus env(safe-area-inset-bottom) via pb- so
+     the fixed nav never covers content. Keep in sync with
+     components/shell/BottomNav.tsx's link min-h. */
+  --bottom-nav-h: 57px;
 }
 
 @theme inline {

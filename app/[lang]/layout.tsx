@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
 import { getDictionary, isLang, LANGS, type Lang } from '@/lib/i18n'
 import { fraunces, inter, notoSansDev, notoSerifDev } from '../fonts'
@@ -9,6 +9,15 @@ import '../globals.css'
 
 export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }))
+}
+
+// viewport-fit=cover is required for env(safe-area-inset-*) to resolve to
+// anything but 0 — without it BottomNav's safe-area padding is inert on
+// notched/gesture-nav phones.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export async function generateMetadata(
@@ -58,7 +67,7 @@ export default async function LangLayout({
           <style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style>
         </noscript>
       </head>
-      <body className="min-h-dvh bg-cream text-ink pb-20 md:pb-0">
+      <body className="min-h-dvh bg-cream text-ink pb-[calc(var(--bottom-nav-h)+env(safe-area-inset-bottom))] md:pb-0">
         <Header lang={lang} />
         {children}
         <Footer lang={lang} />

@@ -16,6 +16,10 @@ export function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: n
       el.classList.add('is-visible')
       return
     }
+    if (!('IntersectionObserver' in window)) {
+      el.classList.add('is-visible')
+      return
+    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return
