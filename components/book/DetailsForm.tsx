@@ -60,8 +60,12 @@ export const EMPTY_BOOKING_DETAILS: BookingDetails = {
   name: '', age: '', gender: '', phone: '', reason: '', consent: false,
 }
 
+// border-hairline-input (3.76:1 against white), not the decorative
+// border-hairline (1.29:1) — a form input's outline is a control boundary
+// under WCAG 1.4.11, which needs 3:1; card hairlines are decorative and
+// exempt. See app/globals.css's --border-input.
 const INPUT_CLASS =
-  'min-h-[48px] w-full rounded-input border-2 border-hairline bg-white px-4 text-lg text-ink ' +
+  'min-h-[48px] w-full rounded-input border-2 border-hairline-input bg-white px-4 text-lg text-ink ' +
   'focus:border-green-700'
 
 function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: ReactNode }) {
