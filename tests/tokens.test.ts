@@ -9,6 +9,8 @@ const REQUIRED_TOKENS = [
   '--green-500: #2E7D32',
   '--green-300: #66BB6A',
   '--green-50: #EDF5EE',
+  '--saffron-800: #98500A',
+  '--saffron-700: #B15E0C',
   '--saffron-600: #C96A10',
   '--saffron-500: #E8871E',
   '--saffron-100: #FDF0DC',
@@ -20,6 +22,7 @@ const REQUIRED_TOKENS = [
   '--ink: #1C1917',
   '--ink-muted: #57534E',
   '--border: #E7E2D8',
+  '--border-input: #8A8375',
 ]
 
 describe('design tokens', () => {

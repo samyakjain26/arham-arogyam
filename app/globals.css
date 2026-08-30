@@ -7,6 +7,8 @@
   --green-300: #66BB6A;
   --green-50: #EDF5EE;
 
+  --saffron-800: #98500A;
+  --saffron-700: #B15E0C;
   --saffron-600: #C96A10;
   --saffron-500: #E8871E;
   --saffron-100: #FDF0DC;
@@ -21,6 +23,13 @@
   --ink: #1C1917;
   --ink-muted: #57534E;
   --border: #E7E2D8;
+  /* Decorative hairlines (card borders etc.) stay on --border above, which
+     is only 1.29:1 against white/cream and is fine for that non-boundary
+     use. Form inputs are a boundary a WCAG 1.4.11 control needs a
+     legible outline for, so they use this darker, still-warm-neutral value
+     instead — see components/book/DetailsForm.tsx's INPUT_CLASS.
+     #8A8375 on white is 3.76:1 (>= the 3:1 minimum). */
+  --border-input: #8A8375;
 
   --shadow-card: 0 4px 20px rgba(20, 64, 26, 0.08);
   --shadow-lift: 0 8px 28px rgba(20, 64, 26, 0.14);
@@ -42,6 +51,8 @@
   --color-green-500: var(--green-500);
   --color-green-300: var(--green-300);
   --color-green-50: var(--green-50);
+  --color-saffron-800: var(--saffron-800);
+  --color-saffron-700: var(--saffron-700);
   --color-saffron-600: var(--saffron-600);
   --color-saffron-500: var(--saffron-500);
   --color-saffron-100: var(--saffron-100);
@@ -53,6 +64,7 @@
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-hairline: var(--border);
+  --color-hairline-input: var(--border-input);
   --radius-card: 20px;
   --radius-btn: 12px;
   --radius-input: 8px;
