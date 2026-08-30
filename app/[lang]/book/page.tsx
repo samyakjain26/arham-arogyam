@@ -5,15 +5,13 @@ import { getDictionary, isLang, DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import { StepIndicator } from '@/components/book/StepIndicator'
 import { DatePicker } from '@/components/book/DatePicker'
 import { SlotGrid } from '@/components/book/SlotGrid'
+import { DetailsForm, type BookingResult } from '@/components/book/DetailsForm'
+import { Confirmation } from '@/components/book/Confirmation'
 import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { Reveal } from '@/components/motion/Reveal'
-import { formatIstTime } from '@/lib/time'
 
-// The wizard host for steps 1 (date) and 2 (slot). Steps 3–4 (details form,
-// confirmation) are a separate task — this only advances to a clearly
-// marked placeholder so the flow doesn't dead-end.
-type WizardStep = 1 | 2 | 3
+// The wizard host for all four steps: date, slot, details, confirmation.
+type WizardStep = 1 | 2 | 3 | 4
 
 export default function BookPage() {
   const routeParams = useParams<{ lang: string }>()
@@ -24,6 +22,7 @@ export default function BookPage() {
   // Kept even after navigating back, so re-advancing doesn't lose earlier answers.
   const [dateISO, setDateISO] = useState<string | null>(null)
   const [slotStart, setSlotStart] = useState<string | null>(null)
+  const [booking, setBooking] = useState<BookingResult | null>(null)
 
   return (
     // A linear step-by-step flow reads better in a narrower centered column
@@ -63,13 +62,37 @@ export default function BookPage() {
 
       {step === 3 && dateISO && slotStart && (
         <Reveal>
-          <Card className="mt-6 flex flex-col items-start gap-4">
-            <p className="text-lg text-ink">{d.book.comingSoon}</p>
-            <p className="text-base text-ink-muted">{formatIstTime(new Date(slotStart), lang)}</p>
-            <Button variant="ghost" size="md" onClick={() => setStep(2)}>
-              {d.book.back}
-            </Button>
-          </Card>
+          <h1 className="text-3xl md:text-4xl">{d.book.detailsTitle}</h1>
+          <DetailsForm
+            lang={lang}
+            d={d}
+            dateISO={dateISO}
+            slotStartISO={slotStart}
+            onBack={() => setStep(2)}
+            onSlotTaken={() => {
+              // Slot was taken between step 2 and submit — return to step 2
+              // with the date preserved so the (remounted, freshly fetched)
+              // grid reflects current availability.
+              setSlotStart(null)
+              setStep(2)
+            }}
+            onBooked={(result) => {
+              setBooking(result)
+              setStep(4)
+            }}
+          />
+        </Reveal>
+      )}
+
+      {step === 4 && booking && (
+        <Reveal>
+          <Confirmation
+            lang={lang}
+            d={d}
+            bookingCode={booking.bookingCode}
+            slotStart={booking.slotStart}
+            slotEnd={booking.slotEnd}
+          />
         </Reveal>
       )}
     </main>
