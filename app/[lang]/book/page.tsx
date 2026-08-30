@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { getDictionary, isLang, DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import { StepIndicator } from '@/components/book/StepIndicator'
@@ -32,6 +32,26 @@ export default function BookPage() {
   // cleared the moment the patient moves off step 2 in any direction.
   const [slotTakenNotice, setSlotTakenNotice] = useState(false)
 
+  // Steps 1-3 swap subtrees in place (unlike step 4's Confirmation, which
+  // mounts as a whole new component) — each step change unmounts the
+  // previous <h1> and mounts a fresh one, so a keyboard/screen-reader user's
+  // focus falls back to <body> with no announcement of what changed. Moving
+  // focus to the incoming step's own heading is the standard wizard pattern:
+  // it both places focus where the new content starts and gets the heading's
+  // text announced, which doubles as the step-change announcement. Skipped
+  // on the very first render so landing on /book doesn't steal focus from
+  // wherever the patient's focus already was (e.g. a skip link, or having
+  // just tapped "Book Appointment").
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    headingRef.current?.focus()
+  }, [step])
+
   return (
     // A linear step-by-step flow reads better in a narrower centered column
     // than the site's full max-w-content (1140px) — that width is right for
@@ -42,7 +62,7 @@ export default function BookPage() {
 
       {step === 1 && (
         <Reveal>
-          <h1 className="text-3xl md:text-4xl">{d.book.pickDate}</h1>
+          <h1 ref={headingRef} tabIndex={-1} className="text-3xl md:text-4xl">{d.book.pickDate}</h1>
           <DatePicker
             lang={lang}
             d={d}
@@ -57,7 +77,7 @@ export default function BookPage() {
             <Button variant="ghost" size="md" onClick={() => { setStep(1); setSlotTakenNotice(false) }}>
               {d.book.back}
             </Button>
-            <h1 className="text-3xl md:text-4xl">{d.book.pickSlot}</h1>
+            <h1 ref={headingRef} tabIndex={-1} className="text-3xl md:text-4xl">{d.book.pickSlot}</h1>
           </div>
           {slotTakenNotice && (
             <p
@@ -78,7 +98,7 @@ export default function BookPage() {
 
       {step === 3 && dateISO && slotStart && (
         <Reveal>
-          <h1 className="text-3xl md:text-4xl">{d.book.detailsTitle}</h1>
+          <h1 ref={headingRef} tabIndex={-1} className="text-3xl md:text-4xl">{d.book.detailsTitle}</h1>
           <DetailsForm
             lang={lang}
             d={d}
