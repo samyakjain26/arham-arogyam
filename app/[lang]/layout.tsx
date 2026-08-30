@@ -56,6 +56,19 @@ export default async function LangLayout({
   const { lang } = await params
   if (!isLang(lang)) notFound()
 
+  // Tried per-locale conditional application of these .variable classes
+  // (skip Fraunces/Inter on /hi, skip Noto Sans Devanagari on /en) to avoid
+  // preloading fonts a given locale never renders. Measured no effect: this
+  // layout is the single shared route for both /en and /hi, and Next
+  // preloads every font/font a layout calls on every route it serves,
+  // regardless of which locale branch actually applies the class at
+  // runtime (confirmed identical <link rel=preload> sets on built hi.html
+  // and en.html either way). See task report for the byte accounting and
+  // what a real per-locale split would require (separate route trees).
+  // Applying all four unconditionally is therefore just as cheap and
+  // avoids a genuine risk: an unapplied variable referenced by
+  // app/globals.css's font-family fallback chains invalidates the whole
+  // declaration, not just that one name.
   return (
     <html
       lang={lang}

@@ -64,28 +64,46 @@
 
 html { scroll-behavior: smooth; }
 
+/* Per-locale font loading (see app/[lang]/layout.tsx): only the fonts a
+   locale actually renders are attached to <html>, so these fallback chains
+   must never name a family the current locale doesn't load — an unset
+   var() invalidates the whole font-family declaration, not just that one
+   name. The one family shared by both locales is Noto Serif Devanagari
+   (the hardcoded अर्हम् आरोग्यम् wordmark + वैद्य initial render on both), so
+   it's the safe fallback target on both sides. */
 body {
   background: var(--cream);
   color: var(--ink);
   font-size: 18px;
   line-height: 1.6;
-  font-family: var(--font-inter), var(--font-noto-sans-dev), system-ui, sans-serif;
+  /* --font-noto-serif-dev fallback only actually renders two characters:
+     LangToggle's "हिं" label on /en. Devanagari, so Noto Sans would be the
+     stylistically-matched choice, but it isn't loaded on /en — reusing the
+     serif face (already loaded for the hero wordmark) avoids pulling in a
+     whole extra family for two glyphs. */
+  font-family: var(--font-inter), var(--font-noto-serif-dev), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 :lang(hi) body, [lang='hi'] {
-  font-family: var(--font-noto-sans-dev), var(--font-inter), system-ui, sans-serif;
+  /* No Inter fallback: Noto Sans Devanagari keeps its 'latin' subset (see
+     app/fonts.ts), which already covers the odd embedded Latin word
+     ("Google", "DPDP") or digit in Hindi copy at ~25KB — cheaper than
+     falling through to Inter's ~48KB Latin file, and it means /hi never
+     has to fetch Inter at all (Inter's preload is off — see fonts.ts —
+     so it's fetched only if something actually needs it). */
+  font-family: var(--font-noto-sans-dev), system-ui, sans-serif;
   line-height: 1.7;
 }
 
 h1, h2, h3 {
-  font-family: var(--font-fraunces), var(--font-noto-serif-dev), Georgia, serif;
+  font-family: var(--font-fraunces), Georgia, serif;
   color: var(--green-900);
   line-height: 1.2;
 }
 
 [lang='hi'] h1, [lang='hi'] h2, [lang='hi'] h3 {
-  font-family: var(--font-noto-serif-dev), var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-noto-serif-dev), Georgia, serif;
 }
 
 :focus-visible {
