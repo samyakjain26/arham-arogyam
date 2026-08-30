@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
 import { getDictionary, isLang, LANGS } from '@/lib/i18n'
+import { asset } from '@/lib/asset'
 import { fraunces, inter, notoSansDev, notoSerifDev } from '../fonts'
 import { Header } from '@/components/shell/Header'
 import { Footer } from '@/components/shell/Footer'
@@ -41,11 +42,11 @@ export async function generateMetadata(
       languages: { hi: '/hi', en: '/en' },
     },
     icons: {
-      icon: '/logo-192.png',
-      apple: '/logo-192.png',
+      icon: asset('/logo-192.png'),
+      apple: asset('/logo-192.png'),
     },
     openGraph: {
-      images: ['/logo-512.png'],
+      images: [asset('/logo-512.png')],
     },
   }
 }

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { getDictionary, type Lang } from '@/lib/i18n'
+import { asset } from '@/lib/asset'
 import { LangToggle } from './LangToggle'
 
 // Desktop-only text links. Mobile has no menu at all — BottomNav carries
@@ -18,7 +19,7 @@ export function Header({ lang }: { lang: Lang }) {
           {/* alt="" — decorative here, the clinic name is announced by the
               adjacent text so the image would otherwise be read out twice. */}
           <Image
-            src="/logo.jpg"
+            src={asset('/logo.jpg')}
             alt=""
             width={44}
             height={44}

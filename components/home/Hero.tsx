@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { buttonClasses } from '@/components/ui/Button'
+import { asset } from '@/lib/asset'
 import type { Dictionary, Lang } from '@/lib/i18n'
 
 // Purely decorative botanical echo of the tree in the logo. A single faint
@@ -48,7 +49,7 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
                      md:h-[200px] md:w-[200px]"
         >
           <Image
-            src="/logo.jpg"
+            src={asset('/logo.jpg')}
             alt=""
             width={400}
             height={400}

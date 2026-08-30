@@ -13,6 +13,17 @@ const isExport = process.env.EXPORT_MODE === "1";
 // Pages). Only meaningful in export mode: local dev/start still run at "/".
 const EXPORT_BASE_PATH = "/arham-arogyam";
 
+// Single source of truth for the sub-path string above: also expose it as
+// NEXT_PUBLIC_BASE_PATH so lib/asset.ts (used for every static-asset src/
+// href, since next/image's `unoptimized: true` mode does not apply
+// basePath itself) can prefix asset URLs with the exact same value used
+// for basePath/assetPrefix below. Must be set before Next builds its
+// NEXT_PUBLIC_* inlining map, so it's assigned here at config-load time
+// rather than duplicated in scripts/build-pages.mjs or an env file.
+if (isExport) {
+  process.env.NEXT_PUBLIC_BASE_PATH = EXPORT_BASE_PATH;
+}
+
 const nextConfig: NextConfig = {
   // Static export (`output: 'export'`) has no server to run next/image
   // optimisation, proxy.ts, or headers()/redirects()/rewrites() against —
