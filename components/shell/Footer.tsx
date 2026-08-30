@@ -7,8 +7,21 @@ import { getDictionary, type Lang } from '@/lib/i18n'
 // calling ahead, so the link only renders once a real number lands here.
 const CLINIC_PHONE = ''
 
+// Mobile has no hamburger menu — Header's text links are `hidden md:flex`
+// and BottomNav only carries three thumb-reachable items (home/book/contact).
+// This footer nav is therefore the ONLY mobile route to about/services/
+// ayurveda (the page carrying the approved medical notice) on every page —
+// it's reachable by scrolling, present in every render of this component,
+// and lists every content page site-wide alongside privacy/terms.
+const NAV_KEYS = ['about', 'services', 'ayurveda', 'contact'] as const
+
 export function Footer({ lang }: { lang: Lang }) {
   const d = getDictionary(lang)
+  const links = [
+    ...NAV_KEYS.map((key) => ({ href: `/${lang}/${key}`, label: d.nav[key] })),
+    { href: `/${lang}/privacy`, label: d.privacy.title },
+    { href: `/${lang}/terms`, label: d.terms.title },
+  ]
 
   return (
     <footer className="border-t border-hairline bg-green-50">
@@ -32,22 +45,18 @@ export function Footer({ lang }: { lang: Lang }) {
 
         <p className="mt-6 max-w-prose text-ink-muted">{d.disclaimer}</p>
 
-        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-          <Link
-            href={`/${lang}/privacy`}
-            className="inline-flex min-h-[48px] items-center text-base font-medium
-                       text-green-700 hover:text-green-900"
-          >
-            {d.privacy.title}
-          </Link>
-          <Link
-            href={`/${lang}/terms`}
-            className="inline-flex min-h-[48px] items-center text-base font-medium
-                       text-green-700 hover:text-green-900"
-          >
-            {d.terms.title}
-          </Link>
-        </div>
+        <nav aria-label={d.a11y.siteLinks} className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="inline-flex min-h-[48px] items-center text-base font-medium
+                         text-green-700 hover:text-green-900"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   )

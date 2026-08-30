@@ -3,10 +3,17 @@ import { getDictionary, type Lang } from '@/lib/i18n'
 
 export function BottomNav({ lang }: { lang: Lang }) {
   const d = getDictionary(lang)
+  // Third slot used to link to /my-appointments, a page that has never
+  // existed (there is no backend, so there is nothing to show) — tapping it
+  // hit Next's stock, unlocalized 404. `contact` is a real route every
+  // patient may need mid-journey (address, hours, directions). The other
+  // four content pages (about/services/ayurveda/privacy/terms... plus this
+  // one) are all reachable from Footer's nav block on every page instead of
+  // competing for one of these three thumb-reachable slots.
   const items = [
     { href: `/${lang}`, label: d.nav.home },
     { href: `/${lang}/book`, label: d.nav.book },
-    { href: `/${lang}/my-appointments`, label: d.nav.mine },
+    { href: `/${lang}/contact`, label: d.nav.contact },
   ]
 
   return (
