@@ -39,17 +39,22 @@ export function SlotGrid({ dateISO, lang, d, onPick }: {
           <button
             key={iso}
             type="button"
-            disabled={!slot.available}
+            // Taken slots must stay "visibly disabled, never hidden" — a
+            // native `disabled` button is pulled out of the tab order
+            // entirely, so a keyboard/screen-reader user can't discover it
+            // exists at all. aria-disabled keeps it focusable and announced
+            // as unavailable; the click is guarded below instead of relying
+            // on the browser to block it (aria-disabled doesn't).
             aria-disabled={!slot.available}
-            onClick={() => onPick(iso)}
+            onClick={() => { if (slot.available) onPick(iso) }}
             style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
             className="min-h-[56px] rounded-btn border-2 border-green-700 bg-white
                        text-lg font-semibold text-green-700
                        animate-[fadeIn_250ms_var(--ease-enter)_both]
                        motion-reduce:animate-none motion-reduce:transform-none
                        transition-transform duration-150 active:scale-[0.97]
-                       disabled:pointer-events-none disabled:border-hairline
-                       disabled:bg-green-50 disabled:text-ink-muted"
+                       aria-disabled:pointer-events-none aria-disabled:border-hairline
+                       aria-disabled:bg-green-50 aria-disabled:text-ink-muted"
           >
             {formatIstTime(slot.start, lang)}
           </button>
