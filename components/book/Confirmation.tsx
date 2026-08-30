@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { buildIcs } from '@/lib/ics'
-import { formatIstTime } from '@/lib/time'
+import { formatIstTime, formatIstDateLabel, utcToIstParts } from '@/lib/time'
 import type { Dictionary, Lang } from '@/lib/i18n'
 
 // Canonical English form of the address, used only to build the maps query
@@ -41,16 +41,6 @@ function Checkmark() {
       />
     </svg>
   )
-}
-
-/** dateISO is derived from slotStart's IST calendar date, formatted as a UTC-midnight instant. */
-function formatIstDateLabel(date: Date, lang: Lang): string {
-  const IST_OFFSET_MIN = 330
-  const ist = new Date(date.getTime() + IST_OFFSET_MIN * 60_000)
-  const utcMidnight = new Date(Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate()))
-  return new Intl.DateTimeFormat(lang === 'hi' ? 'hi-IN' : 'en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
-  }).format(utcMidnight)
 }
 
 export function Confirmation({
@@ -91,7 +81,7 @@ export function Confirmation({
       </div>
 
       <p className="text-xl font-semibold text-ink">
-        {formatIstDateLabel(slotStart, lang)} · {formatIstTime(slotStart, lang)}
+        {formatIstDateLabel(utcToIstParts(slotStart).dateISO, lang)} · {formatIstTime(slotStart, lang)}
       </p>
 
       <div className="flex flex-col items-center gap-3">

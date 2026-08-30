@@ -3,18 +3,10 @@ import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { LeafBullet } from '@/components/home/ServiceCards'
 import { t, type Dictionary, type Lang } from '@/lib/i18n'
+import { formatIstDateLabel } from '@/lib/time'
 import { getUpcomingTuesdaysWithCounts, BOOKING_WINDOW_WEEKS } from '@/lib/mockAvailability'
 
 type TuesdayOption = { dateISO: string; count: number }
-
-/** dateISO is a plain IST calendar date (no time-of-day), so format it as a UTC midnight instant. */
-function formatDateLabel(dateISO: string, lang: Lang): string {
-  const [y, mo, d] = dateISO.split('-').map(Number)
-  const date = new Date(Date.UTC(y, mo - 1, d))
-  return new Intl.DateTimeFormat(lang === 'hi' ? 'hi-IN' : 'en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
-  }).format(date)
-}
 
 export function DatePicker({ lang, d, onPick }: {
   lang: Lang; d: Dictionary; onPick: (dateISO: string) => void
@@ -64,7 +56,7 @@ export function DatePicker({ lang, d, onPick }: {
             <LeafBullet />
             <span>
               <span className="block text-lg font-semibold text-ink">
-                {formatDateLabel(dateISO, lang)}
+                {formatIstDateLabel(dateISO, lang)}
               </span>
               <span className="block text-base text-ink-muted">
                 {full ? d.book.full : t(d.book.slotsLeft, { n: count })}

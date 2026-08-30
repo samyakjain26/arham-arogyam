@@ -36,3 +36,18 @@ export function formatIstTime(d: Date, lang: Lang): string {
     ? `${HI_PERIOD(h)} ${h12}:${mm}`
     : `${h12}:${mm} ${h < 12 ? 'AM' : 'PM'}`
 }
+
+/**
+ * Formats an IST calendar date — e.g. "Tuesday, 1 September" / "मंगलवार, 1 सितंबर".
+ * Takes the dateISO itself (already an IST calendar date, no time-of-day) rather
+ * than a UTC instant, so callers holding either a bare dateISO (DatePicker) or a
+ * real timestamp (Confirmation, via utcToIstParts(d).dateISO) share one
+ * implementation instead of each re-deriving the weekday/day/month formatting.
+ */
+export function formatIstDateLabel(dateISO: string, lang: Lang): string {
+  const [y, mo, d] = dateISO.split('-').map(Number)
+  const utcMidnight = new Date(Date.UTC(y, mo - 1, d))
+  return new Intl.DateTimeFormat(lang === 'hi' ? 'hi-IN' : 'en-IN', {
+    weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
+  }).format(utcMidnight)
+}

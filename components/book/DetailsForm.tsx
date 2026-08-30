@@ -40,6 +40,26 @@ export interface BookingResult {
   slotEnd: Date
 }
 
+/**
+ * Lifted into page.tsx (not local useState here) so the patient's typed
+ * answers survive the one bounce this wizard can force on them: if their
+ * chosen slot is taken between step 2 and submit, DetailsForm unmounts and
+ * the wizard returns to step 2 to re-pick a slot. Without lifting this
+ * state, that unmount would silently discard everything they'd typed.
+ */
+export interface BookingDetails {
+  name: string
+  age: string
+  gender: string
+  phone: string
+  reason: string
+  consent: boolean
+}
+
+export const EMPTY_BOOKING_DETAILS: BookingDetails = {
+  name: '', age: '', gender: '', phone: '', reason: '', consent: false,
+}
+
 const INPUT_CLASS =
   'min-h-[48px] w-full rounded-input border-2 border-hairline bg-white px-4 text-lg text-ink ' +
   'focus:border-green-700'
@@ -56,23 +76,20 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
 }
 
 export function DetailsForm({
-  lang, d, dateISO, slotStartISO, onBack, onSlotTaken, onBooked,
+  lang, d, dateISO, slotStartISO, details, onDetailsChange, onBack, onSlotTaken, onBooked,
 }: {
   lang: Lang
   d: Dictionary
   dateISO: string
   slotStartISO: string
+  details: BookingDetails
+  onDetailsChange: (patch: Partial<BookingDetails>) => void
   onBack: () => void
   onSlotTaken: () => void
   onBooked: (result: BookingResult) => void
 }) {
   const idPrefix = useId()
-  const [name, setName] = useState('')
-  const [age, setAge] = useState('')
-  const [gender, setGender] = useState('')
-  const [phone, setPhone] = useState('')
-  const [reason, setReason] = useState('')
-  const [consent, setConsent] = useState(false)
+  const { name, age, gender, phone, reason, consent } = details
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -130,7 +147,7 @@ export function DetailsForm({
             type="text"
             autoComplete="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => onDetailsChange({ name: e.target.value })}
             className={INPUT_CLASS}
           />
         </Field>
@@ -142,7 +159,7 @@ export function DetailsForm({
             min={0}
             max={120}
             value={age}
-            onChange={(e) => setAge(e.target.value)}
+            onChange={(e) => onDetailsChange({ age: e.target.value })}
             className={INPUT_CLASS}
           />
         </Field>
@@ -150,7 +167,7 @@ export function DetailsForm({
           <select
             id={`${idPrefix}-gender`}
             value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            onChange={(e) => onDetailsChange({ gender: e.target.value })}
             className={INPUT_CLASS}
           >
             <option value="">{d.book.selectPlaceholder}</option>
@@ -167,7 +184,7 @@ export function DetailsForm({
             autoComplete="tel"
             maxLength={10}
             value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+            onChange={(e) => onDetailsChange({ phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
             className={INPUT_CLASS}
           />
         </Field>
@@ -179,7 +196,7 @@ export function DetailsForm({
           <textarea
             id={`${idPrefix}-reason`}
             value={reason}
-            onChange={(e) => setReason(e.target.value)}
+            onChange={(e) => onDetailsChange({ reason: e.target.value })}
             rows={3}
             className={`${INPUT_CLASS} h-auto py-3`}
           />
@@ -190,7 +207,7 @@ export function DetailsForm({
           <input
             type="checkbox"
             checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
+            onChange={(e) => onDetailsChange({ consent: e.target.checked })}
             className="h-6 w-6 shrink-0 accent-green-700"
           />
           {d.book.consent}
