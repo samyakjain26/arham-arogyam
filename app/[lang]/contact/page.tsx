@@ -1,5 +1,5 @@
 import { getDictionary, type Lang } from '@/lib/i18n'
-import { Button } from '@/components/ui/Button'
+import { buttonClasses } from '@/components/ui/Button'
 import { Reveal } from '@/components/motion/Reveal'
 
 // Canonical English form of the address, used only to build the maps query.
@@ -30,13 +30,22 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
             <p className="mt-3 max-w-prose text-lg text-ink">{d.hero.address}</p>
 
             <div className="mt-6 flex flex-wrap gap-4">
-              <a href={mapsHref} target="_blank" rel="noopener noreferrer">
-                <Button variant="secondary" size="md">{d.visit.directions}</Button>
+              <a
+                href={mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonClasses({ variant: 'secondary', size: 'md' })}
+              >
+                {d.visit.directions}
               </a>
 
               {CLINIC_PHONE && (
-                <a href={`tel:${CLINIC_PHONE}`} aria-label={d.a11y.callClinic}>
-                  <Button variant="ghost" size="md">{CLINIC_PHONE}</Button>
+                <a
+                  href={`tel:${CLINIC_PHONE}`}
+                  aria-label={d.a11y.callClinic}
+                  className={buttonClasses({ variant: 'ghost', size: 'md' })}
+                >
+                  {CLINIC_PHONE}
                 </a>
               )}
             </div>
@@ -46,7 +55,7 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
         <Reveal delay={80}>
           <div className="mx-auto mt-8 max-w-prose rounded-card border border-hairline bg-surface p-6 shadow-card md:p-8">
             <h2 className="text-2xl md:text-3xl">{d.contact.timingsTitle}</h2>
-            <p className="mt-3 text-xl font-semibold text-green-800">{d.hero.timing}</p>
+            <p className="mt-3 text-xl font-semibold text-green-900">{d.hero.timing}</p>
           </div>
         </Reveal>
       </section>

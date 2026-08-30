@@ -1,5 +1,5 @@
 import type { Dictionary } from '@/lib/i18n'
-import { Button } from '@/components/ui/Button'
+import { buttonClasses } from '@/components/ui/Button'
 
 // Canonical English form of the address, used only to build the maps query.
 // Matches dictionaries/en.json's hero.address verbatim; kept stable across
@@ -27,16 +27,25 @@ export function VisitUs({ d }: { d: Dictionary }) {
       <div className="rounded-card border border-hairline bg-surface p-6 shadow-card md:p-10">
         <h2 className="text-3xl md:text-4xl">{d.visit.title}</h2>
         <p className="mt-4 max-w-prose text-lg text-ink">{d.hero.address}</p>
-        <p className="mt-2 text-lg font-semibold text-green-800">{d.hero.timing}</p>
+        <p className="mt-2 text-lg font-semibold text-green-900">{d.hero.timing}</p>
 
         <div className="mt-6 flex flex-wrap gap-4">
-          <a href={mapsHref} target="_blank" rel="noopener noreferrer">
-            <Button variant="secondary" size="md">{d.visit.directions}</Button>
+          <a
+            href={mapsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClasses({ variant: 'secondary', size: 'md' })}
+          >
+            {d.visit.directions}
           </a>
 
           {CLINIC_PHONE && (
-            <a href={`tel:${CLINIC_PHONE}`} aria-label={d.a11y.callClinic}>
-              <Button variant="ghost" size="md">{CLINIC_PHONE}</Button>
+            <a
+              href={`tel:${CLINIC_PHONE}`}
+              aria-label={d.a11y.callClinic}
+              className={buttonClasses({ variant: 'ghost', size: 'md' })}
+            >
+              {CLINIC_PHONE}
             </a>
           )}
         </div>

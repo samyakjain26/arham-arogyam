@@ -5,11 +5,14 @@ import { Reveal } from '@/components/motion/Reveal'
 
 // DPDP Act 2023-aligned notice. Every claim here must be backed by the
 // dictionary copy (dictionaries/{hi,en}.json → privacy.*), which states:
-// what is collected (name, phone, age, gender, reason for visit, email),
-// the purpose (scheduling a consultation only), retention (24 months from
-// the visit), that consent is explicit at booking and never pre-ticked, and
-// the deletion route (My Appointments, or contacting the clinic directly).
-// No certification, audit, or security-measure claim is made — none exist.
+// what is collected (name, phone, age, gender, reason for visit — matches
+// DetailsForm.tsx's actual fields exactly; no email is collected, since the
+// Google sign-in that would have supplied one was removed), the purpose
+// (scheduling a consultation only), retention (24 months from the visit),
+// that consent is explicit at booking and never pre-ticked, and the
+// deletion route (contacting the clinic directly — there is no My
+// Appointments page). No certification, audit, or security-measure claim
+// is made — none exist.
 export default async function PrivacyPage({ params }: { params: Promise<{ lang: Lang }> }) {
   const { lang } = await params
   const d = getDictionary(lang)

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
+import { buttonClasses } from '@/components/ui/Button'
 import type { Dictionary, Lang } from '@/lib/i18n'
 
 // Purely decorative botanical echo of the tree in the logo. A single faint
@@ -72,7 +72,7 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
           />
 
           {lang === 'en' && (
-            <p className="mt-3 text-2xl font-semibold text-green-800">{d.site.name}</p>
+            <p className="mt-3 text-2xl font-semibold text-green-900">{d.site.name}</p>
           )}
 
           <p className="mt-3 text-lg text-ink-muted md:text-xl">{d.site.subtitle}</p>
@@ -84,15 +84,15 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
         <p
           className="mx-auto mt-8 inline-flex max-w-full items-center gap-2 rounded-full
                      border border-green-300 bg-green-50 px-6 py-3 text-xl font-semibold
-                     text-green-800 md:text-2xl"
+                     text-green-900 md:text-2xl"
         >
           <ClockIcon />
           {d.hero.timing}
         </p>
 
         <div className="mt-9">
-          <Link href={`/${lang}/book`}>
-            <Button variant="primary" size="lg">{d.hero.cta}</Button>
+          <Link href={`/${lang}/book`} className={buttonClasses({ variant: 'primary', size: 'lg' })}>
+            {d.hero.cta}
           </Link>
         </div>
       </div>

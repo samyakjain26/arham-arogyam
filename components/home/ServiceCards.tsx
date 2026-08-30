@@ -8,7 +8,7 @@ import { Stagger } from '@/components/motion/Stagger'
 // Still used by the standalone /services listing page.
 export function LeafBullet() {
   return (
-    <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6 shrink-0 text-green-600" fill="none">
+    <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6 shrink-0 text-green-700" fill="none">
       <path d="M4 20c8-1 14-7 15-16-9 1-15 7-16 16Z" fill="currentColor" />
       <path d="M6 18c4-4 8-8 12-12" stroke="var(--cream)" strokeWidth="1.1" opacity="0.6" />
     </svg>

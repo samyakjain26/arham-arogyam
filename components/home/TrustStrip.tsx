@@ -36,7 +36,7 @@ export function TrustStrip({ d }: { d: Dictionary }) {
             ) : (
               <span
                 aria-hidden
-                className="text-3xl font-bold text-green-800 [font-family:var(--font-noto-serif-dev)] md:text-4xl"
+                className="text-3xl font-bold text-green-900 [font-family:var(--font-noto-serif-dev)] md:text-4xl"
               >
                 रा
               </span>
