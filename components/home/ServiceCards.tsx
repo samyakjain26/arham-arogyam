@@ -4,7 +4,7 @@ import { Stagger } from '@/components/motion/Stagger'
 
 // Small botanical bullet echoing the logo's tree — a single leaf, not a
 // repeating pattern, so it stays a quiet accent rather than clip-art.
-function LeafBullet() {
+export function LeafBullet() {
   return (
     <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6 shrink-0 text-green-600" fill="none">
       <path d="M4 20c8-1 14-7 15-16-9 1-15 7-16 16Z" fill="currentColor" />
