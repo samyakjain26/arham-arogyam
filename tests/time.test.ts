@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { istWallClockToUtc, utcToIstParts, istWeekday, formatIstTime, formatIstDateLabel } from '@/lib/time'
+import {
+  istWallClockToUtc, utcToIstParts, istWeekday, formatIstTime, formatIstDateLabel, formatIstHourRange,
+} from '@/lib/time'
 
 describe('IST conversion', () => {
   it('converts 17:00 IST to 11:30 UTC', () => {
@@ -32,5 +34,12 @@ describe('IST conversion', () => {
     // 1 Sep 2026 is a Tuesday (see istWeekday test above).
     expect(formatIstDateLabel('2026-09-01', 'en')).toBe('Tuesday, 1 September')
     expect(formatIstDateLabel('2026-09-01', 'hi')).toBe('मंगलवार, 1 सितंबर')
+  })
+
+  it('formats an hour capacity block as a range, repeating the period word in Hindi', () => {
+    const start = istWallClockToUtc('2026-09-01', '17:00')
+    const end = istWallClockToUtc('2026-09-01', '18:00')
+    expect(formatIstHourRange(start, end, 'hi')).toBe('शाम 5 – शाम 6')
+    expect(formatIstHourRange(start, end, 'en')).toBe('5 PM – 6 PM')
   })
 })

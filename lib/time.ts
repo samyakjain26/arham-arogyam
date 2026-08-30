@@ -51,3 +51,23 @@ export function formatIstDateLabel(dateISO: string, lang: Lang): string {
     weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
   }).format(utcMidnight)
 }
+
+const hourLabel = (d: Date, lang: Lang): string => {
+  const { hhmm } = utcToIstParts(d)
+  const [h] = hhmm.split(':').map(Number)
+  const h12 = h % 12 === 0 ? 12 : h % 12
+  return lang === 'hi' ? `${HI_PERIOD(h)} ${h12}` : `${h12} ${h < 12 ? 'AM' : 'PM'}`
+}
+
+/**
+ * Formats a one-hour capacity block's span as a range, never a single exact
+ * instant — patients pick an hour and may arrive any time within it, so the
+ * UI must never look like it promises one specific minute. Deliberately
+ * repeats the period word on both sides in Hindi (matches how the clinic's
+ * own staff phrase it, e.g. "शाम 5 – शाम 6") rather than collapsing to a
+ * single trailing "शाम"; English mirrors the same repeated-suffix shape
+ * ("5 PM – 6 PM") for consistency between the two languages.
+ */
+export function formatIstHourRange(start: Date, end: Date, lang: Lang): string {
+  return `${hourLabel(start, lang)} – ${hourLabel(end, lang)}`
+}
