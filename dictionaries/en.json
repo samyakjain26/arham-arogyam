@@ -5,6 +5,12 @@
     "tagline": "Accessible health consultation for everyone"
   },
   "nav": { "home": "Home", "book": "Book", "mine": "My Appointments", "about": "About", "services": "Services", "ayurveda": "Ayurveda", "contact": "Contact" },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you were looking for isn't available. Please go to the home page or book an appointment.",
+    "home": "Go to home page",
+    "book": "Book an appointment"
+  },
   "hero": {
     "vaidya": "Vaidya Rahul Jain",
     "timing": "Every Tuesday, 5:00 PM – 10:00 PM",
@@ -38,8 +44,10 @@
     "phone": "Mobile number",
     "reason": "Reason for visit",
     "consent": "I agree that this information will be used only for scheduling my appointment.",
-    "confirmed": "Your appointment is confirmed",
-    "code": "Booking code",
+    "confirmed": "You have selected this time",
+    "previewTitle": "Please note: no appointment has been booked yet",
+    "previewBody": "The information and code shown here have not been saved anywhere.",
+    "code": "Reference code",
     "addCalendar": "Add to calendar",
     "cancel": "Cancel appointment",
     "cancelConfirm": "Are you sure you want to cancel this appointment?"
@@ -109,7 +117,7 @@
     "title": "Privacy Policy",
     "intro": "This notice explains what personal information Arham Arogyam collects when you book an appointment, why it is collected, how long it is kept, and how you can request its deletion. This policy is written to align with India's Digital Personal Data Protection Act, 2023 (DPDP Act).",
     "collectedTitle": "Information We Collect",
-    "collectedBody": "When you book an appointment, we collect your name, mobile number, age, gender, reason for visit, and email address.",
+    "collectedBody": "When you book an appointment, we collect your name, mobile number, age, gender, and reason for visit.",
     "purposeTitle": "Why We Collect It",
     "purposeBody": "This information is used only to schedule and manage your consultation at the centre. It is not used for any other purpose.",
     "retentionTitle": "How Long We Keep It",
@@ -117,7 +125,7 @@
     "consentTitle": "Your Consent",
     "consentBody": "You give your consent explicitly at the time of booking by actively choosing the consent option yourself. It is never selected for you in advance.",
     "deletionTitle": "Requesting Deletion",
-    "deletionBody": "You can request deletion of your information from the My Appointments page once it is available, or by contacting the clinic directly."
+    "deletionBody": "You can request deletion of your information by contacting the clinic directly."
   },
   "terms": {
     "title": "Terms & Conditions",
@@ -129,5 +137,5 @@
     "changesTitle": "Changes to These Terms",
     "changesBody": "These terms may be updated from time to time. Continuing to use this website after a change means you accept the updated terms."
   },
-  "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic" }
+  "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic", "siteLinks": "More pages" }
 }
