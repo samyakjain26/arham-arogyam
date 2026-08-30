@@ -3,8 +3,9 @@ import { useId, useState, type FormEvent, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { t, type Dictionary, type Lang } from '@/lib/i18n'
-import { formatIstTime } from '@/lib/time'
-import { getSlotsForDate } from '@/lib/mockAvailability'
+import { formatIstHourRange } from '@/lib/time'
+import { getHourBlocksForDate, HOUR_MINUTES } from '@/lib/mockAvailability'
+import { isValidParchiNumber } from '@/lib/parchi'
 
 // Unambiguous alphabet — no O/0, I/1, L — patients read these aloud over
 // the phone. Matches lib/bookingCode.ts's alphabet/length, but this file is
@@ -36,19 +37,22 @@ function generateBookingCode(): string {
 
 export interface BookingResult {
   bookingCode: string
-  slotStart: Date
-  slotEnd: Date
+  blockStart: Date
+  blockEnd: Date
+  parchiNumber: string
 }
 
 /**
  * Lifted into page.tsx (not local useState here) so the patient's typed
  * answers survive the one bounce this wizard can force on them: if their
- * chosen slot is taken between step 2 and submit, DetailsForm unmounts and
- * the wizard returns to step 2 to re-pick a slot. Without lifting this
- * state, that unmount would silently discard everything they'd typed.
+ * chosen hour block fills up between step 2 and submit, DetailsForm
+ * unmounts and the wizard returns to step 2 to re-pick an hour. Without
+ * lifting this state, that unmount would silently discard everything
+ * they'd typed.
  */
 export interface BookingDetails {
   name: string
+  parchiNumber: string
   age: string
   gender: string
   phone: string
@@ -57,7 +61,7 @@ export interface BookingDetails {
 }
 
 export const EMPTY_BOOKING_DETAILS: BookingDetails = {
-  name: '', age: '', gender: '', phone: '', reason: '', consent: false,
+  name: '', parchiNumber: '', age: '', gender: '', phone: '', reason: '', consent: false,
 }
 
 // border-hairline-input (3.76:1 against white), not the decorative
@@ -80,28 +84,36 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
 }
 
 export function DetailsForm({
-  lang, d, dateISO, slotStartISO, details, onDetailsChange, onBack, onSlotTaken, onBooked,
+  lang, d, dateISO, blockStartISO, details, onDetailsChange, onBack, onBlockFull, onBooked,
 }: {
   lang: Lang
   d: Dictionary
   dateISO: string
-  slotStartISO: string
+  blockStartISO: string
   details: BookingDetails
   onDetailsChange: (patch: Partial<BookingDetails>) => void
   onBack: () => void
-  onSlotTaken: () => void
+  onBlockFull: () => void
   onBooked: (result: BookingResult) => void
 }) {
   const idPrefix = useId()
-  const { name, age, gender, phone, reason, consent } = details
+  const { name, parchiNumber, age, gender, phone, reason, consent } = details
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const slotStart = new Date(slotStartISO)
-  const time = formatIstTime(slotStart, lang)
+  // The hour block is always exactly HOUR_MINUTES long — this local guess
+  // is only for the button label, computed synchronously so the CTA text
+  // never waits on a fetch. The authoritative end time (from the same
+  // source of truth HourGrid rendered from) is fetched fresh at submit
+  // time below, and that value — not this guess — is what's actually
+  // passed to onBooked/the calendar invite.
+  const blockStart = new Date(blockStartISO)
+  const blockEndGuess = new Date(blockStart.getTime() + HOUR_MINUTES * 60_000)
+  const range = formatIstHourRange(blockStart, blockEndGuess, lang)
 
   function validate(): string | null {
     if (!name.trim()) return d.errors.nameRequired
+    if (!isValidParchiNumber(parchiNumber)) return d.errors.parchiInvalid
     const ageNum = Number(age)
     if (!age.trim() || !Number.isFinite(ageNum) || ageNum <= 0 || ageNum > 120) {
       return d.errors.ageInvalid
@@ -124,16 +136,21 @@ export function DetailsForm({
     setSubmitting(true)
     try {
       // Booking submission is mocked locally — there is no POST
-      // /api/appointments yet. Re-check the slot against the same source of
-      // truth SlotGrid rendered from; it may have been taken between step 2
-      // and now (e.g. from another tab or device).
-      const slots = await getSlotsForDate(dateISO)
-      const slot = slots.find((s) => s.start.toISOString() === slotStartISO)
-      if (!slot || !slot.available) {
-        onSlotTaken()
+      // /api/appointments yet. Re-check the chosen hour against the same
+      // source of truth HourGrid rendered from; it may have filled up
+      // between step 2 and now (e.g. from another tab or device).
+      const blocks = await getHourBlocksForDate(dateISO)
+      const block = blocks.find((b) => b.start.toISOString() === blockStartISO)
+      if (!block || block.remaining <= 0) {
+        onBlockFull()
         return
       }
-      onBooked({ bookingCode: generateBookingCode(), slotStart: slot.start, slotEnd: slot.end })
+      onBooked({
+        bookingCode: generateBookingCode(),
+        blockStart: block.start,
+        blockEnd: block.end,
+        parchiNumber,
+      })
     } catch {
       setError(d.errors.network)
     } finally {
@@ -152,6 +169,17 @@ export function DetailsForm({
             autoComplete="name"
             value={name}
             onChange={(e) => onDetailsChange({ name: e.target.value })}
+            className={INPUT_CLASS}
+          />
+        </Field>
+        <Field label={d.book.parchiNumber} htmlFor={`${idPrefix}-parchi`}>
+          <input
+            id={`${idPrefix}-parchi`}
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+            value={parchiNumber}
+            onChange={(e) => onDetailsChange({ parchiNumber: e.target.value.replace(/\D/g, '').slice(0, 4) })}
             className={INPUT_CLASS}
           />
         </Field>
@@ -180,6 +208,10 @@ export function DetailsForm({
             <option value="other">{d.book.genderOther}</option>
           </select>
         </Field>
+      </Card>
+
+      {/* Block 2 of 2 — phone, reason, consent: three items, under the cap. */}
+      <Card className="flex flex-col gap-5">
         <Field label={d.book.phone} htmlFor={`${idPrefix}-phone`}>
           <input
             id={`${idPrefix}-phone`}
@@ -192,10 +224,6 @@ export function DetailsForm({
             className={INPUT_CLASS}
           />
         </Field>
-      </Card>
-
-      {/* Block 2 of 2 — reason plus consent, well under the four-field cap. */}
-      <Card className="flex flex-col gap-5">
         <Field label={d.book.reason} htmlFor={`${idPrefix}-reason`}>
           <textarea
             id={`${idPrefix}-reason`}
@@ -229,7 +257,7 @@ export function DetailsForm({
           {d.book.back}
         </Button>
         <Button type="submit" variant="primary" size="lg" disabled={submitting}>
-          {t(d.book.confirmCta, { time })}
+          {t(d.book.confirmCta, { range })}
         </Button>
       </div>
     </form>

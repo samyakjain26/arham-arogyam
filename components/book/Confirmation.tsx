@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { Card } from '@/components/ui/Card'
 import { buttonClasses } from '@/components/ui/Button'
 import { buildIcs } from '@/lib/ics'
-import { formatIstTime, formatIstDateLabel, utcToIstParts } from '@/lib/time'
+import { formatIstHourRange, formatIstDateLabel, utcToIstParts } from '@/lib/time'
 import type { Dictionary, Lang } from '@/lib/i18n'
 
 // Canonical English form of the address, used only to build the maps query
@@ -44,27 +44,31 @@ function Checkmark() {
 }
 
 export function Confirmation({
-  lang, d, bookingCode, slotStart, slotEnd,
+  lang, d, bookingCode, parchiNumber, blockStart, blockEnd,
 }: {
   lang: Lang
   d: Dictionary
   bookingCode: string
-  slotStart: Date
-  slotEnd: Date
+  parchiNumber: string
+  blockStart: Date
+  blockEnd: Date
 }) {
   // Booking submission is mocked locally (no POST /api/appointments, so no
   // GET .../ics route either) — the .ics is built and served straight from
-  // the browser as a downloadable blob.
+  // the browser as a downloadable blob. lib/ics.ts's field names are
+  // start/end of the calendar event — generic, not slot-specific — so the
+  // hour block's start/end pass straight through unchanged; the event now
+  // spans the whole hour, not a 15-minute appointment.
   const icsUrl = useMemo(() => {
     const ics = buildIcs({
       bookingCode,
-      slotStart,
-      slotEnd,
+      slotStart: blockStart,
+      slotEnd: blockEnd,
       summary: d.site.name,
       location: d.hero.address,
     })
     return URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }))
-  }, [bookingCode, slotStart, slotEnd, d.site.name, d.hero.address])
+  }, [bookingCode, blockStart, blockEnd, d.site.name, d.hero.address])
 
   useEffect(() => () => URL.revokeObjectURL(icsUrl), [icsUrl])
 
@@ -104,9 +108,20 @@ export function Confirmation({
         <p className="mt-1 text-4xl font-bold tracking-[0.2em] text-green-700">{bookingCode}</p>
       </div>
 
-      <p className="text-xl font-semibold text-ink">
-        {formatIstDateLabel(utcToIstParts(slotStart).dateISO, lang)} · {formatIstTime(slotStart, lang)}
-      </p>
+      <div>
+        <p className="text-lg text-ink-muted">{d.book.parchiNumber}</p>
+        <p className="mt-1 text-2xl font-bold text-ink">{parchiNumber}</p>
+      </div>
+
+      {/* An hour RANGE, never a single exact time — the patient may arrive
+          any time within it, and the UI must never look like it promises
+          one specific minute. */}
+      <div>
+        <p className="text-xl font-semibold text-ink">
+          {formatIstDateLabel(utcToIstParts(blockStart).dateISO, lang)} · {formatIstHourRange(blockStart, blockEnd, lang)}
+        </p>
+        <p className="mt-1 max-w-prose text-lg text-ink-muted">{d.book.arriveAnytime}</p>
+      </div>
 
       <div className="flex flex-col items-center gap-3">
         <p className="max-w-prose text-lg text-ink">{d.hero.address}</p>

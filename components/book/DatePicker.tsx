@@ -59,7 +59,7 @@ export function DatePicker({ lang, d, onPick }: {
                 {formatIstDateLabel(dateISO, lang)}
               </span>
               <span className="block text-base text-ink-muted">
-                {full ? d.book.full : t(d.book.slotsLeft, { n: count })}
+                {full ? d.book.full : t(d.book.placesLeft, { n: count })}
               </span>
             </span>
           </button>
