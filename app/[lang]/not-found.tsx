@@ -1,25 +1,21 @@
-'use client'
-
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { lang as rootLang } from 'next/root-params'
 import { getDictionary, isLang, DEFAULT_LANG } from '@/lib/i18n'
 import { buttonClasses } from '@/components/ui/Button'
 
-// Next's `not-found.js` convention deliberately takes no props (see
-// node_modules/next/dist/docs/01-app/03-api-reference/04-functions/not-found.md)
-// — even nested under app/[lang], it does not receive the `lang` route
-// param. This file still renders as `children` inside app/[lang]/layout.tsx,
-// so Header/Footer/BottomNav and <html lang=...> are already correct (that
-// layout DID resolve a valid `lang` from the URL — that's the only way
-// Next reaches this boundary instead of the layout's own `notFound()` call
-// for an invalid top-level segment). For the copy on this page itself, the
-// officially documented workaround for path-dependent content in
-// not-found.js is a Client Component hook — usePathname() — read on mount,
-// so it always matches the segment that's actually in the URL bar.
-export default function NotFound() {
-  const pathname = usePathname()
-  const firstSegment = pathname?.split('/')[1] ?? ''
-  const lang = isLang(firstSegment) ? firstSegment : DEFAULT_LANG
+// `[lang]` is this app's ROOT parameter — app/[lang]/layout.tsx IS the root
+// layout, so `lang` qualifies for next/root-params (introduced Next 16.3,
+// see node_modules/next/dist/docs/.../functions/next-root-params.md). That
+// lets this stay a plain Server Component instead of a Client Component
+// reading usePathname(): not-found.js takes no props (even nested under a
+// dynamic segment), but a root parameter getter works from any Server
+// Component in the tree, no prop-drilling required. This also means the
+// page's own copy is part of the server-rendered HTML in the initial
+// response, rather than a client-hydrated component reference — confirmed
+// by comparing raw (curl, no JS) output before/after this change.
+export default async function NotFound() {
+  const raw = await rootLang()
+  const lang = isLang(raw) ? raw : DEFAULT_LANG
   const d = getDictionary(lang)
 
   return (
