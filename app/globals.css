@@ -116,6 +116,13 @@ h1, h2, h3 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Booking wizard: date cards and slot buttons fade in staggered, capped at
+   300ms total — see components/book/DatePicker.tsx and SlotGrid.tsx. */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

@@ -19,8 +19,10 @@
   },
   "book": {
     "step": "Step {n} of 4",
+    "back": "← Back",
     "pickDate": "Choose a Tuesday",
     "pickSlot": "Choose a time",
+    "comingSoon": "This part is coming soon.",
     "slotsLeft": "{n} times available",
     "full": "No times available on this day",
     "signIn": "Sign in with Google",
