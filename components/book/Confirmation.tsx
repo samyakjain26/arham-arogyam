@@ -1,7 +1,7 @@
 'use client'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import { buttonClasses } from '@/components/ui/Button'
 import { buildIcs } from '@/lib/ics'
 import { formatIstTime, formatIstDateLabel, utcToIstParts } from '@/lib/time'
 import type { Dictionary, Lang } from '@/lib/i18n'
@@ -68,12 +68,36 @@ export function Confirmation({
 
   useEffect(() => () => URL.revokeObjectURL(icsUrl), [icsUrl])
 
+  // Step 4 mounts fresh only when the wizard reaches it, so a mount-only
+  // effect is exactly "focus moved to this step" — see book/page.tsx for
+  // the equivalent handling of steps 1-3, whose headings remount in place
+  // rather than as a whole new component tree.
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { headingRef.current?.focus() }, [])
+
   const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAPS_QUERY_ADDRESS)}`
 
   return (
     <Card className="mt-6 flex flex-col items-center gap-6 py-10 text-center">
+      {/* Unmissable: this sits ABOVE the checkmark and heading, so a patient
+          cannot reach the "success"-shaped content below without first
+          passing this. There is no POST /api/appointments — nothing here
+          has been stored anywhere, and the wizard must never let a patient
+          leave believing otherwise. role="alert" announces it immediately
+          for screen-reader users too. */}
+      <div
+        role="alert"
+        className="w-full rounded-card border-2 border-saffron-700 bg-saffron-100 p-4 text-left"
+      >
+        <p className="text-lg font-bold text-ink">{d.book.previewTitle}</p>
+        <p className="mt-1 text-lg text-ink">{d.book.previewBody}</p>
+        <p className="mt-1 text-lg text-ink">{d.book.comingSoon}</p>
+      </div>
+
       <Checkmark />
-      <h1 className="text-3xl md:text-4xl">{d.book.confirmed}</h1>
+      <h1 ref={headingRef} tabIndex={-1} className="text-3xl md:text-4xl">
+        {d.book.confirmed}
+      </h1>
 
       <div>
         <p className="text-lg text-ink-muted">{d.book.code}</p>
@@ -86,13 +110,26 @@ export function Confirmation({
 
       <div className="flex flex-col items-center gap-3">
         <p className="max-w-prose text-lg text-ink">{d.hero.address}</p>
-        <a href={mapsHref} target="_blank" rel="noopener noreferrer">
-          <Button variant="secondary" size="md">{d.visit.directions}</Button>
+        {/* Styled directly rather than wrapping a <Button> — nesting
+            interactive content inside an <a> is invalid HTML with
+            inconsistent assistive-tech exposure (see components/ui/Button.tsx's
+            buttonClasses, the single source of these class strings). */}
+        <a
+          href={mapsHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClasses({ variant: 'secondary', size: 'md' })}
+        >
+          {d.visit.directions}
         </a>
       </div>
 
-      <a href={icsUrl} download={`arham-arogyam-${bookingCode}.ics`}>
-        <Button variant="ghost" size="md">{d.book.addCalendar}</Button>
+      <a
+        href={icsUrl}
+        download={`arham-arogyam-${bookingCode}.ics`}
+        className={buttonClasses({ variant: 'ghost', size: 'md' })}
+      >
+        {d.book.addCalendar}
       </a>
     </Card>
   )
