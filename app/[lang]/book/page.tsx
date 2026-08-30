@@ -26,7 +26,11 @@ export default function BookPage() {
   const [slotStart, setSlotStart] = useState<string | null>(null)
 
   return (
-    <main className="mx-auto max-w-content px-6 py-12 md:py-16">
+    // A linear step-by-step flow reads better in a narrower centered column
+    // than the site's full max-w-content (1140px) — that width is right for
+    // multi-card marketing grids, but stretched a 2-column date/slot grid
+    // into sparse, oversized cards on a laptop screen.
+    <main className="mx-auto max-w-3xl px-6 py-12 md:py-16">
       <StepIndicator step={step} d={d} />
 
       {step === 1 && (

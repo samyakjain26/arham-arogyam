@@ -23,7 +23,7 @@ export function SlotGrid({ dateISO, lang, d, onPick }: {
 
   if (!slots) {
     return (
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {Array.from({ length: 9 }).map((_, i) => <Skeleton key={i} className="h-14" />)}
       </div>
     )
@@ -32,7 +32,7 @@ export function SlotGrid({ dateISO, lang, d, onPick }: {
   if (slots.length === 0) return <p className="mt-6 text-lg">{d.book.full}</p>
 
   return (
-    <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
       {slots.map((slot, i) => {
         const iso = slot.start.toISOString()
         return (
