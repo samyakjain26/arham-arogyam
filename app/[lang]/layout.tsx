@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
-import { getDictionary, isLang, LANGS, type Lang } from '@/lib/i18n'
+import { getDictionary, isLang, LANGS } from '@/lib/i18n'
 import { fraunces, inter, notoSansDev, notoSerifDev } from '../fonts'
 import { Header } from '@/components/shell/Header'
 import { Footer } from '@/components/shell/Footer'

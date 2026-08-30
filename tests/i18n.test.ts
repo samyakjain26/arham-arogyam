@@ -24,7 +24,10 @@ function flatten(obj: Record<string, unknown>, prefix = ''): string[] {
 }
 
 function getPath(obj: unknown, key: string): unknown {
-  return key.split('.').reduce<any>((o, p) => o?.[p], obj)
+  return key.split('.').reduce<unknown>(
+    (o, p) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[p] : undefined),
+    obj,
+  )
 }
 
 describe('dictionaries', () => {
