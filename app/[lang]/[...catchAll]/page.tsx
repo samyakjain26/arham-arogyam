@@ -20,6 +20,24 @@ import { notFound } from 'next/navigation'
 // already-matched [lang] layout. Static and literal segments (book,
 // ayurveda, about, ...) always take precedence over a catch-all in Next's
 // router, so this can never shadow a real page.
+//
+// This file has no generateStaticParams/dynamicParams: it must stay fully
+// dynamic (ƒ) here so a genuinely on-demand server render always reaches
+// this component and its notFound() call. `output: 'export'` cannot ship
+// that (a dynamic segment with zero static params is rejected outright:
+// "Page ... returned an empty array from generateStaticParams(). With
+// output: 'export', at least one route must be generated."), and there's
+// no way to make that literal-boolean route-segment config conditional on
+// process.env.EXPORT_MODE (tried it — Next requires a static boolean, and
+// unconditionally forcing dynamicParams=false here to satisfy export also
+// broke the normal build: it made Next skip this component's notFound()
+// call entirely and serve the generic root `_not-found` boundary instead
+// of the sibling app/[lang]/not-found.tsx, verified with
+// `next build && next start` + curl). So `npm run build:pages` (see
+// scripts/build-pages.mjs) instead removes this route from the build
+// entirely for the duration of the export — this file is untouched either
+// way, preserving the working localized-404 behaviour exactly as it is
+// today for the normal build.
 export default function CatchAll() {
   notFound()
 }
