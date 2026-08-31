@@ -18,6 +18,12 @@
 
   --gold-500: #F2C230;
 
+  /* Sampled from the logo wordmark's actual pixels. 7.17:1 against
+     --cream — passes WCAG AA at any size, used as-is. Brand-name accent
+     only: joins magenta's role as the wordmark accent, not a general
+     recolour. */
+  --brand-red: #A91A24;
+
   --cream: #FFFCF5;
   --surface: #FFFFFF;
   --ink: #1C1917;
@@ -59,6 +65,7 @@
   --color-magenta-600: var(--magenta-600);
   --color-magenta-50: var(--magenta-50);
   --color-gold-500: var(--gold-500);
+  --color-brand-red: var(--brand-red);
   --color-cream: var(--cream);
   --color-surface: var(--surface);
   --color-ink: var(--ink);

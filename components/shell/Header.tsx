@@ -26,7 +26,7 @@ export function Header({ lang }: { lang: Lang }) {
             priority
             className="rounded-lg"
           />
-          <span className="text-lg font-semibold text-green-900 sm:text-xl">
+          <span className="text-lg font-semibold text-brand-red sm:text-xl">
             {d.site.name}
           </span>
         </Link>

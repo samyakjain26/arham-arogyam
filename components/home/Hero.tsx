@@ -63,8 +63,8 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
               Indian Ayurvedic clinic" signal on the page — it leads on both
               /hi and /en, sized larger than the English name, always set in
               Noto Serif Devanagari regardless of the active locale. */}
-          <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-bold text-green-900 [font-family:var(--font-noto-serif-dev)]">
-            अर्हम् आरोग्यम्
+          <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-bold text-brand-red [font-family:var(--font-noto-serif-dev)]">
+            ॐ अर्हम् आरोग्यम्
           </h1>
 
           <div
@@ -73,7 +73,7 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
           />
 
           {lang === 'en' && (
-            <p className="mt-3 text-2xl font-semibold text-green-900">{d.site.name}</p>
+            <p className="mt-3 text-2xl font-semibold text-brand-red">{d.site.name}</p>
           )}
 
           <p className="mt-3 text-lg text-ink-muted md:text-xl">{d.site.subtitle}</p>
