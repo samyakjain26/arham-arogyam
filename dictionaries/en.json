@@ -4,7 +4,15 @@
     "subtitle": "Bapu Nagar Aushdhalay",
     "tagline": "Accessible health consultation for everyone"
   },
-  "nav": { "home": "Home", "book": "Book", "mine": "My Appointments", "about": "About", "services": "Services", "ayurveda": "Ayurveda", "contact": "Contact" },
+  "nav": {
+    "home": "Home",
+    "book": "Book",
+    "mine": "My Appointments",
+    "about": "About",
+    "services": "Services",
+    "ayurveda": "Ayurveda",
+    "contact": "Contact"
+  },
   "notFound": {
     "title": "Page not found",
     "body": "The page you were looking for isn't available. Please go to the home page or book an appointment.",
@@ -38,7 +46,7 @@
     "arriveAnytime": "You can come any time during this one-hour window.",
     "name": "Full name",
     "phone": "Mobile number",
-    "parchiNumber": "Parchi number",
+    "parchiNumber": "Slip Number (Parchi Number)",
     "consent": "I agree that this information will be used only for scheduling my appointment.",
     "confirmed": "You have selected this time",
     "previewTitle": "Please note: no appointment has been booked yet",
@@ -57,7 +65,7 @@
     "nameRequired": "Please enter your name.",
     "phoneInvalid": "Please enter a valid 10-digit mobile number.",
     "consentRequired": "Please give consent to continue.",
-  "parchiInvalid": "Parchi number must be between 1 and 1500."
+    "parchiInvalid": "Slip number must be between 1 and 1500."
   },
   "ayurveda": {
     "title": "Ayurvedic consultation",
@@ -131,5 +139,10 @@
     "changesTitle": "Changes to These Terms",
     "changesBody": "These terms may be updated from time to time. Continuing to use this website after a change means you accept the updated terms."
   },
-  "a11y": { "langToggle": "Change language", "menu": "Main menu", "callClinic": "Call the clinic", "siteLinks": "More pages" }
+  "a11y": {
+    "langToggle": "Change language",
+    "menu": "Main menu",
+    "callClinic": "Call the clinic",
+    "siteLinks": "More pages"
+  }
 }
