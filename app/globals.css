@@ -81,54 +81,70 @@
   --max-width-prose: 68ch;
 }
 
-html { scroll-behavior: smooth; }
+/* These are cascade *defaults* for bare elements/attributes — exactly the
+   kind of rule a Tailwind utility class should be able to override on a
+   specific element (text-brand-red on an <h1>, bg-cream/text-ink on
+   <body>, etc). Tailwind v4 emits utilities inside `@layer utilities`, and
+   unlayered CSS always beats layered CSS regardless of specificity — so
+   these must live in `@layer base` (merges into the `base` layer Tailwind
+   already declared via `@import "tailwindcss"` above) or every one of them
+   silently wins over any utility that tries to override it. This bit
+   `h1,h2,h3` vs `.text-brand-red` on components/home/Hero.tsx's heading;
+   body already carries bg-cream/text-ink utilities in
+   app/[lang]/layout.tsx that were losing the same way, just invisibly,
+   since the values happened to match. See the prefers-reduced-motion block
+   near the bottom of this file for the one case that deliberately stays
+   unlayered instead. */
+@layer base {
+  html { scroll-behavior: smooth; }
 
-/* Per-locale font loading (see app/[lang]/layout.tsx): only the fonts a
-   locale actually renders are attached to <html>, so these fallback chains
-   must never name a family the current locale doesn't load — an unset
-   var() invalidates the whole font-family declaration, not just that one
-   name. The one family shared by both locales is Noto Serif Devanagari
-   (the hardcoded अर्हम् आरोग्यम् wordmark + वैद्य initial render on both), so
-   it's the safe fallback target on both sides. */
-body {
-  background: var(--cream);
-  color: var(--ink);
-  font-size: 18px;
-  line-height: 1.6;
-  /* --font-noto-serif-dev fallback only actually renders two characters:
-     LangToggle's "हिं" label on /en. Devanagari, so Noto Sans would be the
-     stylistically-matched choice, but it isn't loaded on /en — reusing the
-     serif face (already loaded for the hero wordmark) avoids pulling in a
-     whole extra family for two glyphs. */
-  font-family: var(--font-inter), var(--font-noto-serif-dev), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+  /* Per-locale font loading (see app/[lang]/layout.tsx): only the fonts a
+     locale actually renders are attached to <html>, so these fallback chains
+     must never name a family the current locale doesn't load — an unset
+     var() invalidates the whole font-family declaration, not just that one
+     name. The one family shared by both locales is Noto Serif Devanagari
+     (the hardcoded अर्हम् आरोग्यम् wordmark + वैद्य initial render on both), so
+     it's the safe fallback target on both sides. */
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.6;
+    /* --font-noto-serif-dev fallback only actually renders two characters:
+       LangToggle's "हिं" label on /en. Devanagari, so Noto Sans would be the
+       stylistically-matched choice, but it isn't loaded on /en — reusing the
+       serif face (already loaded for the hero wordmark) avoids pulling in a
+       whole extra family for two glyphs. */
+    font-family: var(--font-inter), var(--font-noto-serif-dev), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 
-:lang(hi) body, [lang='hi'] {
-  /* No Inter fallback: Noto Sans Devanagari keeps its 'latin' subset (see
-     app/fonts.ts), which already covers the odd embedded Latin word
-     ("Google", "DPDP") or digit in Hindi copy at ~25KB — cheaper than
-     falling through to Inter's ~48KB Latin file, and it means /hi never
-     has to fetch Inter at all (Inter's preload is off — see fonts.ts —
-     so it's fetched only if something actually needs it). */
-  font-family: var(--font-noto-sans-dev), system-ui, sans-serif;
-  line-height: 1.7;
-}
+  :lang(hi) body, [lang='hi'] {
+    /* No Inter fallback: Noto Sans Devanagari keeps its 'latin' subset (see
+       app/fonts.ts), which already covers the odd embedded Latin word
+       ("Google", "DPDP") or digit in Hindi copy at ~25KB — cheaper than
+       falling through to Inter's ~48KB Latin file, and it means /hi never
+       has to fetch Inter at all (Inter's preload is off — see fonts.ts —
+       so it's fetched only if something actually needs it). */
+    font-family: var(--font-noto-sans-dev), system-ui, sans-serif;
+    line-height: 1.7;
+  }
 
-h1, h2, h3 {
-  font-family: var(--font-fraunces), Georgia, serif;
-  color: var(--green-900);
-  line-height: 1.2;
-}
+  h1, h2, h3 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    color: var(--green-900);
+    line-height: 1.2;
+  }
 
-[lang='hi'] h1, [lang='hi'] h2, [lang='hi'] h3 {
-  font-family: var(--font-noto-serif-dev), Georgia, serif;
-}
+  [lang='hi'] h1, [lang='hi'] h2, [lang='hi'] h3 {
+    font-family: var(--font-noto-serif-dev), Georgia, serif;
+  }
 
-:focus-visible {
-  outline: 3px solid var(--saffron-500);
-  outline-offset: 2px;
-  border-radius: 4px;
+  :focus-visible {
+    outline: 3px solid var(--saffron-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* Scroll-reveal: content is never display:none, so a JS failure
@@ -166,6 +182,14 @@ h1, h2, h3 {
   to { stroke-dashoffset: 0; }
 }
 
+/* Deliberately left UNLAYERED (not @layer base/utilities): this block must
+   always win over every animation/transition/scroll-behavior utility on
+   the page, no matter its layer or specificity, so reduced-motion can
+   never be silently overridden by a component-level utility class. The
+   `*, *::before, *::after` rule backs that with !important too — belt and
+   suspenders. Do not move this into @layer, and do not "fix" the
+   unlayered `html` rule below to match the @layer base one above; both are
+   intentional here. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
