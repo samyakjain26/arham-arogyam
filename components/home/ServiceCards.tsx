@@ -24,7 +24,7 @@ const SERVICE_ICONS: ReactNode[] = [
   <path key="pulse" d="M3 12h4l2-5 4 10 2-5h6" />,
   // Basic health consultation — conversation
   <path key="chat" d="M4 5h16v10H9l-4 4v-4H4Z" strokeLinejoin="round" />,
-  // Consultation with the Vaidya — a book of traditional knowledge
+  // Consultation with the Doctor — a book of traditional knowledge
   <path
     key="book"
     d="M12 7c-2-1.2-5-1.6-8-.8v12.6c3-.8 6-.4 8 .8 2-1.2 5-1.6 8-.8V6.2c-3-.8-6-.4-8 .8Zm0 0v12.6"

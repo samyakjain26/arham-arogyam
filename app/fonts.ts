@@ -35,7 +35,7 @@ export const notoSansDev = Noto_Sans_Devanagari({
   subsets: ['devanagari', 'latin'], weight: ['400', '500', '600'], variable: '--font-noto-sans-dev', display: 'swap', preload: false,
 })
 // 'latin' subset dropped: this face is only ever selected for pure-Devanagari
-// text (the hardcoded अर्हम् आरोग्यम् wordmark and वैद्य initial, plus Hindi
+// text (the hardcoded अर्हम् आरोग्यम् wordmark and the doctor's initial, plus Hindi
 // h1/h2/h3 headings) — no heading or hardcoded string here ever embeds a
 // Latin character, so the Latin chunk would only add preload weight, never
 // actually render anything.

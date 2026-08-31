@@ -3,7 +3,7 @@ import { Prose } from '@/components/Prose'
 import { Reveal } from '@/components/motion/Reveal'
 
 // The medical disclaimer (not for emergencies, no online medical advice,
-// consult the Vaidya before taking any medicine or remedy) gets the same
+// consult the Doctor before taking any medicine or remedy) gets the same
 // saffron-highlighted treatment as d.ayurveda.notice on /ayurveda — it is
 // the one section on this page that must not be skimmed past.
 export default async function TermsPage({ params }: { params: Promise<{ lang: Lang }> }) {

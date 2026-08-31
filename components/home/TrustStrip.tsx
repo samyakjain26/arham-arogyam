@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { t, type Dictionary } from '@/lib/i18n'
 
-// The clinic has not supplied a photo of Vaidya Rahul Jain (design doc, open
+// The clinic has not supplied a photo of Dr. Rahul Jain (design doc, open
 // question #3). A stock photo of any person standing in for him would
 // misrepresent who treats you — worse than no photo. Swap in a real src here
 // once one exists; nothing else in this component needs to change.
