@@ -73,7 +73,7 @@ export function Hero({ lang, d }: { lang: Lang; d: Dictionary }) {
           />
 
           {lang === 'en' && (
-            <p className="mt-3 text-2xl font-semibold text-brand-red">{d.site.name}</p>
+            <p className="mt-3 text-2xl font-semibold text-brand-red">ॐ {d.site.name}</p>
           )}
 
           <p className="mt-3 text-lg text-ink-muted md:text-xl">{d.site.subtitle}</p>
