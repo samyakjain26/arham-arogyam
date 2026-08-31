@@ -5,7 +5,7 @@ import { Reveal } from '@/components/motion/Reveal'
 
 // DPDP Act 2023-aligned notice. Every claim here must be backed by the
 // dictionary copy (dictionaries/{hi,en}.json → privacy.*), which states:
-// what is collected (name, phone, age, gender, reason for visit — matches
+// what is collected (name, mobile number, and parchi number — matches
 // DetailsForm.tsx's actual fields exactly; no email is collected, since the
 // Google sign-in that would have supplied one was removed), the purpose
 // (scheduling a consultation only), retention (24 months from the visit),

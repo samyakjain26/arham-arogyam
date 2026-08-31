@@ -53,15 +53,12 @@ export interface BookingResult {
 export interface BookingDetails {
   name: string
   parchiNumber: string
-  age: string
-  gender: string
   phone: string
-  reason: string
   consent: boolean
 }
 
 export const EMPTY_BOOKING_DETAILS: BookingDetails = {
-  name: '', parchiNumber: '', age: '', gender: '', phone: '', reason: '', consent: false,
+  name: '', parchiNumber: '', phone: '', consent: false,
 }
 
 // border-hairline-input (3.76:1 against white), not the decorative
@@ -97,7 +94,7 @@ export function DetailsForm({
   onBooked: (result: BookingResult) => void
 }) {
   const idPrefix = useId()
-  const { name, parchiNumber, age, gender, phone, reason, consent } = details
+  const { name, parchiNumber, phone, consent } = details
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -114,13 +111,7 @@ export function DetailsForm({
   function validate(): string | null {
     if (!name.trim()) return d.errors.nameRequired
     if (!isValidParchiNumber(parchiNumber)) return d.errors.parchiInvalid
-    const ageNum = Number(age)
-    if (!age.trim() || !Number.isFinite(ageNum) || ageNum <= 0 || ageNum > 120) {
-      return d.errors.ageInvalid
-    }
-    if (!gender) return d.errors.genderRequired
     if (!/^\d{10}$/.test(phone)) return d.errors.phoneInvalid
-    if (!reason.trim()) return d.errors.reasonRequired
     if (!consent) return d.errors.consentRequired
     return null
   }
@@ -160,7 +151,8 @@ export function DetailsForm({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-6">
-      {/* Block 1 of 2 — at most four fields per block. */}
+      {/* A single block — name, parchi number, phone, consent: four items,
+          at the four-fields-per-block cap. */}
       <Card className="flex flex-col gap-5">
         <Field label={d.book.name} htmlFor={`${idPrefix}-name`}>
           <input
@@ -183,35 +175,6 @@ export function DetailsForm({
             className={INPUT_CLASS}
           />
         </Field>
-        <Field label={d.book.age} htmlFor={`${idPrefix}-age`}>
-          <input
-            id={`${idPrefix}-age`}
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={120}
-            value={age}
-            onChange={(e) => onDetailsChange({ age: e.target.value })}
-            className={INPUT_CLASS}
-          />
-        </Field>
-        <Field label={d.book.gender} htmlFor={`${idPrefix}-gender`}>
-          <select
-            id={`${idPrefix}-gender`}
-            value={gender}
-            onChange={(e) => onDetailsChange({ gender: e.target.value })}
-            className={INPUT_CLASS}
-          >
-            <option value="">{d.book.selectPlaceholder}</option>
-            <option value="female">{d.book.genderFemale}</option>
-            <option value="male">{d.book.genderMale}</option>
-            <option value="other">{d.book.genderOther}</option>
-          </select>
-        </Field>
-      </Card>
-
-      {/* Block 2 of 2 — phone, reason, consent: three items, under the cap. */}
-      <Card className="flex flex-col gap-5">
         <Field label={d.book.phone} htmlFor={`${idPrefix}-phone`}>
           <input
             id={`${idPrefix}-phone`}
@@ -222,15 +185,6 @@ export function DetailsForm({
             value={phone}
             onChange={(e) => onDetailsChange({ phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
             className={INPUT_CLASS}
-          />
-        </Field>
-        <Field label={d.book.reason} htmlFor={`${idPrefix}-reason`}>
-          <textarea
-            id={`${idPrefix}-reason`}
-            value={reason}
-            onChange={(e) => onDetailsChange({ reason: e.target.value })}
-            rows={3}
-            className={`${INPUT_CLASS} h-auto py-3`}
           />
         </Field>
 

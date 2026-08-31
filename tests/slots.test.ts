@@ -122,7 +122,7 @@ describe('getAvailableSlots', () => {
   })
 
   it('drops only the blacked-out range on a partial blackout', () => {
-    // Vaidya arrives an hour late: 17:00-18:00 blocked, 4 slots removed.
+    // Doctor arrives an hour late: 17:00-18:00 blocked, 4 slots removed.
     const blackouts = [{ date: TUESDAY, startTime: '17:00', endTime: '18:00' }]
     const slots = getAvailableSlots(params({ blackouts }))
     expect(slots).toHaveLength(16)
