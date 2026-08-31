@@ -1,5 +1,6 @@
 import { getDictionary, type Lang } from '@/lib/i18n'
 import { buttonClasses } from '@/components/ui/Button'
+import { MapPinIcon } from '@/components/ui/MapPinIcon'
 import { Reveal } from '@/components/motion/Reveal'
 
 // Canonical English form of the address, used only to build the maps query.
@@ -36,6 +37,7 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
                 rel="noopener noreferrer"
                 className={buttonClasses({ variant: 'secondary', size: 'md' })}
               >
+                <MapPinIcon />
                 {d.visit.directions}
               </a>
 

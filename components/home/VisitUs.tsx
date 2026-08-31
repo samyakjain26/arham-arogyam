@@ -1,5 +1,6 @@
 import type { Dictionary } from '@/lib/i18n'
 import { buttonClasses } from '@/components/ui/Button'
+import { MapPinIcon } from '@/components/ui/MapPinIcon'
 
 // Canonical English form of the address, used only to build the maps query.
 // Matches dictionaries/en.json's hero.address verbatim; kept stable across
@@ -36,6 +37,7 @@ export function VisitUs({ d }: { d: Dictionary }) {
             rel="noopener noreferrer"
             className={buttonClasses({ variant: 'secondary', size: 'md' })}
           >
+            <MapPinIcon />
             {d.visit.directions}
           </a>
 
